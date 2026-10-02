@@ -1,5 +1,5 @@
 import datetime
-from id_generator import id_generator
+from general_purpose_functions.id_generator import id_generator
 
 class Receipt:
     def __init__(self, timestamp: str, amount: float, organization: str, address: str, image: str):

@@ -14,6 +14,14 @@ def id_generator(id_type):
             json_source = "income_expense_tracker/iet_json_files/receipts.json"
             id_variable = "receipt_id"
             prefix = "REC"
+        case "financialReport":
+            json_source = "fin_report_generator/frg_json_files/financial_reports.json"
+            id_variable = "report_id"
+            prefix = "FIN"
+        case "pieChart":
+            json_source = "fin_report_generator/frg_json_files/pie_charts.json"
+            id_variable = "chart_id"
+            prefix = "PIE"
         case _:
             raise ValueError(f"Unknown id_type: '{id_type}'")
     
