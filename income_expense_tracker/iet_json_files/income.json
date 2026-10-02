@@ -1,0 +1,12 @@
+[
+    {
+        "income_id": "INC-0000",
+        "name": "Test Income",
+        "amount": 189.92,
+        "mode_of_payment": "Test Mode",
+        "category_of_income": "Test Category",
+        "timestamp": "16:01 | October 1, 2026",
+        "receipt": "receipt",
+        "comments": ["comment 1", "comment 2"]
+    }
+]

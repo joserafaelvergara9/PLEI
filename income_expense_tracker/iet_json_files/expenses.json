@@ -1,0 +1,13 @@
+[
+    {
+        "expense_id": "EXP-0000",
+        "name": "Test Expense",
+        "amount": 189.92,
+        "quantity": 1,
+        "mode_of_payment": "Test Mode",
+        "category_of_payment": "Test Category",
+        "timestamp": "16:01 | October 1, 2026",
+        "receipt": "receipt",
+        "comments": ["comment 1", "comment 2"]
+    }
+]
