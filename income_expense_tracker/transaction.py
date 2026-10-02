@@ -1,3 +1,5 @@
+## TO ADD: CHECKS FOR MODE AND CATEGORY !!
+
 from abc import ABC, abstractmethod
 from receipt import Receipt
 from general_purpose_functions.id_generator import id_generator
@@ -72,6 +74,7 @@ class Expense(Transaction):
         self._category_of_payment = category_of_payment
         self._quantity = quantity
         self._expense_id = id_generator("expense")
+        self._json_path = "income_expense_tracker/iet_json_files/expenses.json"
     
     @property
     def category_of_payment(self) -> str:
@@ -80,6 +83,10 @@ class Expense(Transaction):
     @property
     def quantity(self) -> int:
         return self._quantity
+    
+    @property
+    def json_path(self) -> str:
+        return self._json_path
 
     @category_of_payment.setter
     def category_of_payment(self, category: str) -> None:
@@ -91,17 +98,44 @@ class Expense(Transaction):
             raise ValueError("Quantity must be at least 1.")
         self._quantity = quantity
 
+    def convert_to_dict(self) -> dict:
+        return {
+            "expense_id": self._expense_id,
+            "name": self.name,
+            "amount": self.amount,
+            "quantity": self.quantity,
+            "mode_of_payment": self.mode_of_payment,
+            "category_of_payment": self.category_of_payment,
+            "timestamp": self.timestamp,
+            "receipt": self.receipt,
+            "comments": self.comments
+        }
+    
+    def save_to_json(self, filepath: str = json_path) -> None:
+        if os.path.exists(filepath): # Load data if file exists
+            try:
+                with open(filepath, "r", encoding="utf-8") as file:
+                    data = json.load(file)
+            except json.JSONDecodeError:
+                data = []
+        else:
+            data = []
+        data.append(self.convert_to_dict()) # Append the entry
+        os.makedirs(os.path.dirname(filepath), exist_ok=True) # Check if target directory exists again (?)
+        with open(filepath, "w", encoding="utf-8") as file: # Write to json
+            json.dump(data, file, indent=4)
+
     def __str__(self) -> str:
         return (
             f"Expense ID:          {self._expense_id}\n"
-            f"Name:                {self._name}\n"
-            f"Amount:              P{self._amount:,.2f}\n"
-            f"Quantity:            {self._quantity}\n"
-            f"Mode of Payment:     {self._mode_of_payment}\n"
-            f"Category of Payment: {self._category_of_payment}\n"
-            f"Timestamp:           {self._timestamp}\n"
-            f"Receipt:             {self._receipt}\n"
-            f"Comments:            {', '.join(self._comments)}"
+            f"Name:                {self.name}\n"
+            f"Amount:              P{self.amount:,.2f}\n"
+            f"Quantity:            {self.quantity}\n"
+            f"Mode of Payment:     {self.mode_of_payment}\n"
+            f"Category of Payment: {self.category_of_payment}\n"
+            f"Timestamp:           {self.timestamp}\n"
+            f"Receipt:             {self.receipt}\n"
+            f"Comments:            {', '.join(self.comments)}"
         )
 
     def display_transaction(self) -> None:
@@ -121,25 +155,56 @@ class Income(Transaction):
         super().__init__(name, amount, mode_of_payment, timestamp, receipt, comments)
         self._category_of_income = category_of_income
         self._income_id = id_generator("income")
+        self._json_path = "income_expense_tracker/iet_json_files/income.json"
     
     @property
     def category_of_income(self) -> str:
         return self._category_of_income
+    
+    @property
+    def json_path(self) -> str:
+        return self._json_path
 
     @category_of_income.setter
     def category_of_income(self, category: str) -> None:
         self._category_of_income = category
 
+    def convert_to_dict(self) -> dict:
+        return {
+            "income_id": self._income_id,
+            "name": self.name,
+            "amount": self.amount,
+            "mode_of_payment": self.mode_of_payment,
+            "category_of_income": self.category_of_income,
+            "timestamp": self.timestamp,
+            "receipt": self.receipt,
+            "comments": self.comments
+        }
+    
+    def save_to_json(self, filepath: str = json_path) -> None:
+        if os.path.exists(filepath): # Load data if file exists
+            try:
+                with open(filepath, "r", encoding="utf-8") as file:
+                    data = json.load(file)
+            except json.JSONDecodeError:
+                data = []
+        else:
+            data = []
+        data.append(self.convert_to_dict()) # Append the entry
+        os.makedirs(os.path.dirname(filepath), exist_ok=True) # Check if target directory exists again (?)
+        with open(filepath, "w", encoding="utf-8") as file: # Write to json
+            json.dump(data, file, indent=4)
+
     def __str__(self) -> str:
         return (
             f"Income ID:           {self._income_id}\n"
-            f"Name:                {self._name}\n"
-            f"Amount:              P{self._amount:,.2f}\n"
-            f"Mode of Payment:     {self._mode_of_payment}\n"
-            f"Category of Income:  {self._category_of_income}\n"
-            f"Timestamp:           {self._timestamp}\n"
-            f"Receipt:             {self._receipt}\n"
-            f"Comments:            {', '.join(self._comments)}"
+            f"Name:                {self.name}\n"
+            f"Amount:              P{self.amount:,.2f}\n"
+            f"Mode of Payment:     {self.mode_of_payment}\n"
+            f"Category of Income:  {self.category_of_income}\n"
+            f"Timestamp:           {self.timestamp}\n"
+            f"Receipt:             {self.receipt}\n"
+            f"Comments:            {', '.join(self.comments)}"
         )
 
     def display_transaction(self) -> None:

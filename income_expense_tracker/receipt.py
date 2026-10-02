@@ -71,12 +71,12 @@ class Receipt:
 
     def __str__(self) -> str:
         return (
-            f"Receipt ID:   {self._receipt_id}\n"
-            f"Organization: {self._organization}\n"
-            f"Address:      {self._address}\n"
-            f"Timestamp:    {self._timestamp}\n"
-            f"Amount:       P{self._amount:,.2f}\n"
-            f"Image:        {self._image}"
+            f"Receipt ID:   {self.receipt_id}\n"
+            f"Organization: {self.organization}\n"
+            f"Address:      {self.address}\n"
+            f"Timestamp:    {self.timestamp}\n"
+            f"Amount:       P{self.amount:,.2f}\n"
+            f"Image:        {self.image}"
         )
 
     def display_receipt(self) -> None:
