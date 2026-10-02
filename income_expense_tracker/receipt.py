@@ -6,7 +6,14 @@ from general_purpose_functions.id_generator import id_generator
 JSON_PATH = "income_expense_tracker/iet_json_files/receipt.json"
 
 class Receipt:
-    def __init__(self, timestamp: str, amount: float, organization: str, address: str, image: str):
+    def __init__(
+            self, 
+            timestamp: str, 
+            amount: float, 
+            organization: str, 
+            address: str, 
+            image: str
+        ):
         self._timestamp = timestamp
         self._amount = amount
         self._organization = organization
@@ -64,12 +71,12 @@ class Receipt:
 
     def __str__(self) -> str:
         return (
-            f"Receipt ID:   {self.receipt_id}\n"
-            f"Organization: {self.organization}\n"
-            f"Address:      {self.address}\n"
-            f"Timestamp:    {self.timestamp}\n"
-            f"Amount:       P{self.amount:,.2f}\n"
-            f"Image:        {self.image}"
+            f"Receipt ID:   {self._receipt_id}\n"
+            f"Organization: {self._organization}\n"
+            f"Address:      {self._address}\n"
+            f"Timestamp:    {self._timestamp}\n"
+            f"Amount:       P{self._amount:,.2f}\n"
+            f"Image:        {self._image}"
         )
 
     def display_receipt(self) -> None:
