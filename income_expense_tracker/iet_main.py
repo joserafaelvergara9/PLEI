@@ -1,0 +1,2 @@
+from receipt import Receipt
+
