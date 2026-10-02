@@ -1,16 +1,17 @@
 import datetime
+from id_generator import id_generator
 
 class Receipt:
-    def __init__(self, timestamp: datetime, amount: float, organization: str, address: str, image: str):
+    def __init__(self, timestamp: str, amount: float, organization: str, address: str, image: str):
         self._timestamp = timestamp
         self._amount = amount
         self._organization = organization
         self._address = address
         self._image = image # link to local image file
-        self._receipt_id = "placeholder"
+        self._receipt_id = id_generator("receipt")
 
     @property
-    def timestamp(self) -> datetime:
+    def timestamp(self) -> str:
         return self._timestamp
     
     @property
@@ -33,7 +34,16 @@ class Receipt:
     def receipt_id(self) -> str:
         return self._receipt_id
     
-    def display_receipt():
-        pass
-    
-    
+    def __str__(self) -> str:
+        return (
+            f"Receipt ID:   {self.receipt_id}\n"
+            f"Organization: {self.organization}\n"
+            f"Address:      {self.address}\n"
+            f"Timestamp:    {self.timestamp}\n"
+            f"Amount:       P{self.amount:,.2f}\n"
+            f"Image:        {self.image}"
+        )
+
+    def display_receipt(self) -> None:
+        print(self)
+        
