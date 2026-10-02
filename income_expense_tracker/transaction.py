@@ -108,7 +108,42 @@ class Expense(Transaction):
         print(self)
         
 class Income(Transaction):
-    pass
+    def __init__(
+            self, 
+            name: str, 
+            amount: float, 
+            mode_of_payment: str,
+            timestamp: str,
+            category_of_income: str,
+            receipt: Receipt = None,
+            comments: list = None,
+        ):
+        super().__init__(name, amount, mode_of_payment, timestamp, receipt, comments)
+        self._category_of_income = category_of_income
+        self._income_id = id_generator("income")
+    
+    @property
+    def category_of_income(self) -> str:
+        return self._category_of_income
+
+    @category_of_income.setter
+    def category_of_income(self, category: str) -> None:
+        self._category_of_income = category
+
+    def __str__(self) -> str:
+        return (
+            f"Income ID:           {self._income_id}\n"
+            f"Name:                {self._name}\n"
+            f"Amount:              P{self._amount:,.2f}\n"
+            f"Mode of Payment:     {self._mode_of_payment}\n"
+            f"Category of Income:  {self._category_of_income}\n"
+            f"Timestamp:           {self._timestamp}\n"
+            f"Receipt:             {self._receipt}\n"
+            f"Comments:            {', '.join(self._comments)}"
+        )
+
+    def display_transaction(self) -> None:
+        print(self)
 
 
 '''
