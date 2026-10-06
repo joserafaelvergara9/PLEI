@@ -16,6 +16,8 @@ from datetime import datetime
 import json
 import os
 
+VALID_PAYMENT_METHODS = ["cash", "credit", "debit", "qrph", "paypal", "venmo"]
+
 
 class Transaction(ABC):
     def __init__(
@@ -84,9 +86,8 @@ class Expense(Transaction):
             receipt: Receipt = None,
             comments: list = None,
         ):
-        self._valid_payment_methods = ["cash", "credit", "debit", "qrph", "paypal", "venmo"]
         self._valid_categories = ["housing", "utilities", "insurance", "debt", "groceries", "food", "transportation", "grooming", "healthcare", "personal"]
-        if mode_of_payment.lower().strip() not in self._valid_payment_methods:
+        if mode_of_payment.lower().strip() not in VALID_PAYMENT_METHODS:
             raise cusexc.InvalidCategory(f"Unknown mode of payment: {mode_of_payment}")
         if category_of_payment.lower().strip() not in self._valid_categories:
             raise cusexc.InvalidCategory(f"Unknown category: {category_of_payment}")
@@ -169,9 +170,8 @@ class Income(Transaction):
             receipt: Receipt = None,
             comments: list = None,
         ):
-        self._valid_payment_methods = ["cash", "credit", "debit", "qrph", "paypal", "venmo"]
         self._valid_categories = ["salary", "gift", "bonus", "allowance"]
-        if mode_of_payment.lower().strip() not in self._valid_payment_methods:
+        if mode_of_payment.lower().strip() not in VALID_PAYMENT_METHODS:
             raise cusexc.InvalidCategory(f"Unknown mode of payment: {mode_of_payment}")
         if category_of_income.lower().strip() not in self._valid_categories:
             raise cusexc.InvalidCategory(f"Unknown category: {category_of_income}")
