@@ -1,11 +1,13 @@
 ## TO ADD: CHECKS FOR MODE AND CATEGORY !!
 ## ALSO ADD: WHEN TRANSACTION IS ADDED, PUT INTO TRANSACTION HISTORY
-## ALSO FIGURE OUT: HOW THE RECEIPT OBJECT IS GOING TO WORK EXACTLY
+## ALSO FIGURE OUT: HOW THE RECEIPT OBJECT IS GOING TO WORK EXACTLY (NEED TO DEMONSTRATE COMPOSITION)
 ## ADD TRY, EXCEPT, ELSE, FINALLY
 ## MAKE ALL TIMESTAMP INSTANCES DATETIME
 
 ## MAKE THE USER BE ABLE TO DECIDE VALID CATEGORIES
 ## CUSTOM EXCEPTION
+
+## RENAME FILTERTYPE TO FILTER AND MAKE IT COMPOSITION TO TRANSHISTORY
 
 
 from abc import ABC, abstractmethod
@@ -14,6 +16,7 @@ from general_purpose_functions.id_generator import id_generator
 import general_purpose_functions.custom_exceptions as cusexc
 from datetime import datetime
 import json
+import csv ## TO DO: Move the valid categories and methods to the CSV
 import os
 
 VALID_PAYMENT_METHODS = ["cash", "credit", "debit", "qrph", "paypal", "venmo"]
