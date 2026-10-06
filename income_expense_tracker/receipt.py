@@ -2,19 +2,19 @@ import datetime
 import json
 import os
 from general_purpose_functions.id_generator import id_generator
+from datetime import datetime
 
 JSON_PATH = "income_expense_tracker/iet_json_files/receipt.json"
 
 class Receipt:
     def __init__(
             self, 
-            timestamp: str, 
             amount: float, 
             organization: str, 
             address: str, 
             image: str
         ):
-        self._timestamp = timestamp
+        self._timestamp = datetime.now()
         self._amount = amount
         self._organization = organization
         self._address = address

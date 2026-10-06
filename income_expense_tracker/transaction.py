@@ -11,8 +11,10 @@
 from abc import ABC, abstractmethod
 from receipt import Receipt
 from general_purpose_functions.id_generator import id_generator
+from datetime import datetime
 import json
 import os
+
 
 class Transaction(ABC):
     def __init__(
@@ -20,14 +22,13 @@ class Transaction(ABC):
             name: str, 
             amount: float, 
             mode_of_payment: str,
-            timestamp: str,
             receipt: Receipt = None,
             comments: list = None
         ):
         self._name = name
         self._amount = amount
         self._mode_of_payment = mode_of_payment
-        self._timestamp = timestamp
+        self._timestamp = datetime.now()
         self._receipt = receipt
         self._comments = comments if comments is not None else []
 
@@ -66,13 +67,14 @@ class Transaction(ABC):
     def display_transaction(self) -> None:
         pass
 
+
+
 class Expense(Transaction):
     def __init__(
             self, 
             name: str, 
             amount: float, 
             mode_of_payment: str,
-            timestamp: str,
             category_of_payment: str,
             quantity: int = 1,
             receipt: Receipt = None,
@@ -80,7 +82,7 @@ class Expense(Transaction):
         ):
         # self._valid_payment_methods = ["cash", "credit", "debit", "qrph", "paypal", "venmo"]
         # self._valid_categories = ["housing", "utilities", "insurance", "debt", "groceries", "food", "transportation", "grooming", "healthcare", "personal"]
-        super().__init__(name, amount, mode_of_payment, timestamp, receipt, comments)
+        super().__init__(name, amount, mode_of_payment, receipt, comments)
         self._category_of_payment = category_of_payment
         self._quantity = quantity
         self._expense_id = id_generator("expense")
@@ -157,12 +159,11 @@ class Income(Transaction):
             name: str, 
             amount: float, 
             mode_of_payment: str,
-            timestamp: str,
             category_of_income: str,
             receipt: Receipt = None,
             comments: list = None,
         ):
-        super().__init__(name, amount, mode_of_payment, timestamp, receipt, comments)
+        super().__init__(name, amount, mode_of_payment, receipt, comments)
         self._category_of_income = category_of_income
         self._income_id = id_generator("income")
         self._json_path = "income_expense_tracker/iet_json_files/income.json"
