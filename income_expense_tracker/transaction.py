@@ -67,6 +67,13 @@ class Transaction(ABC):
     def display_transaction(self) -> None:
         pass
 
+    @abstractmethod
+    def convert_to_dict(self) -> dict: 
+        pass
+
+    @abstractmethod
+    def save_to_json(self) -> None: 
+        pass
 
 
 class Expense(Transaction):
