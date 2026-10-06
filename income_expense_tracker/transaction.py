@@ -64,10 +64,6 @@ class Transaction(ABC):
             self._comments.remove(comment)
 
     @abstractmethod
-    def display_transaction(self) -> None:
-        pass
-
-    @abstractmethod
     def convert_to_dict(self) -> dict: 
         pass
 
@@ -157,8 +153,6 @@ class Expense(Transaction):
             f"Comments:            {', '.join(self.comments)}"
         )
 
-    def display_transaction(self) -> None:
-        print(self)
         
 class Income(Transaction):
     def __init__(
@@ -224,9 +218,6 @@ class Income(Transaction):
             f"Receipt:             {self.receipt}\n"
             f"Comments:            {', '.join(self.comments)}"
         )
-
-    def display_transaction(self) -> None:
-        print(self)
 
 
 '''
