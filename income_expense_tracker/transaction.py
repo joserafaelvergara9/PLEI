@@ -1,6 +1,11 @@
 ## TO ADD: CHECKS FOR MODE AND CATEGORY !!
 ## ALSO ADD: WHEN TRANSACTION IS ADDED, PUT INTO TRANSACTION HISTORY
 ## ALSO FIGURE OUT: HOW THE RECEIPT OBJECT IS GOING TO WORK EXACTLY
+## ADD TRY, EXCEPT, ELSE, FINALLY
+
+## MAKE THE USER BE ABLE TO DECIDE VALID CATEGORIES
+## CUSTOM EXCEPTION
+
 
 from abc import ABC, abstractmethod
 from receipt import Receipt
@@ -72,6 +77,8 @@ class Expense(Transaction):
             receipt: Receipt = None,
             comments: list = None,
         ):
+        # self._valid_payment_methods = ["cash", "credit", "debit", "qrph", "paypal", "venmo"]
+        # self._valid_categories = ["housing", "utilities", "insurance", "debt", "groceries", "food", "transportation", "grooming", "healthcare", "personal"]
         super().__init__(name, amount, mode_of_payment, timestamp, receipt, comments)
         self._category_of_payment = category_of_payment
         self._quantity = quantity

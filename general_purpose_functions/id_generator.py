@@ -1,3 +1,4 @@
+from custom_exceptions import *
 import json
 
 def id_generator(id_type):
@@ -23,7 +24,7 @@ def id_generator(id_type):
             id_variable = "chart_id"
             prefix = "PIE"
         case _:
-            raise ValueError(f"Unknown id_type: '{id_type}'")
+            raise InvalidIDType(f"Unknown id_type: '{id_type}'")
     
     try:
         with open(json_source, "r", encoding="utf-8") as file:
