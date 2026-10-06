@@ -94,11 +94,12 @@ class Expense(Transaction):
             raise cusexc.InvalidCategory(f"Unknown mode of payment: {mode_of_payment}")
         if category_of_payment.lower().strip() not in self._valid_categories:
             raise cusexc.InvalidCategory(f"Unknown category: {category_of_payment}")
-        super().__init__(name, amount, mode_of_payment, receipt, comments)
-        self._category_of_payment = category_of_payment
-        self._quantity = quantity
-        self._expense_id = id_generator("expense")
-        self._json_path = "income_expense_tracker/iet_json_files/expenses.json"
+        else:
+            super().__init__(name, amount, mode_of_payment, receipt, comments)
+            self._category_of_payment = category_of_payment
+            self._quantity = quantity
+            self._expense_id = id_generator("expense")
+            self._json_path = "income_expense_tracker/iet_json_files/expenses.json"
     
     @property
     def category_of_payment(self) -> str:
@@ -178,10 +179,11 @@ class Income(Transaction):
             raise cusexc.InvalidCategory(f"Unknown mode of payment: {mode_of_payment}")
         if category_of_income.lower().strip() not in self._valid_categories:
             raise cusexc.InvalidCategory(f"Unknown category: {category_of_income}")
-        super().__init__(name, amount, mode_of_payment, receipt, comments)
-        self._category_of_income = category_of_income
-        self._income_id = id_generator("income")
-        self._json_path = "income_expense_tracker/iet_json_files/income.json"
+        else:
+            super().__init__(name, amount, mode_of_payment, receipt, comments)
+            self._category_of_income = category_of_income
+            self._income_id = id_generator("income")
+            self._json_path = "income_expense_tracker/iet_json_files/income.json"
     
     @property
     def category_of_income(self) -> str:
