@@ -1,6 +1,3 @@
-class InvalidModeOfPayment(Exception):
-    pass
-
 class InvalidCategory(Exception):
     pass
 

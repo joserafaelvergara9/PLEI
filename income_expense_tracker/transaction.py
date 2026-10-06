@@ -11,6 +11,7 @@
 from abc import ABC, abstractmethod
 from receipt import Receipt
 from general_purpose_functions.id_generator import id_generator
+import general_purpose_functions.custom_exceptions as cusexc
 from datetime import datetime
 import json
 import os
@@ -83,8 +84,12 @@ class Expense(Transaction):
             receipt: Receipt = None,
             comments: list = None,
         ):
-        # self._valid_payment_methods = ["cash", "credit", "debit", "qrph", "paypal", "venmo"]
-        # self._valid_categories = ["housing", "utilities", "insurance", "debt", "groceries", "food", "transportation", "grooming", "healthcare", "personal"]
+        self._valid_payment_methods = ["cash", "credit", "debit", "qrph", "paypal", "venmo"]
+        self._valid_categories = ["housing", "utilities", "insurance", "debt", "groceries", "food", "transportation", "grooming", "healthcare", "personal"]
+        if mode_of_payment.lower().strip() not in self._valid_payment_methods:
+            raise cusexc.InvalidCategory(f"Unknown mode of payment: {mode_of_payment}")
+        if category_of_payment.lower().strip() not in self._valid_categories:
+            raise cusexc.InvalidCategory(f"Unknown category: {category_of_payment}")
         super().__init__(name, amount, mode_of_payment, receipt, comments)
         self._category_of_payment = category_of_payment
         self._quantity = quantity
@@ -164,6 +169,12 @@ class Income(Transaction):
             receipt: Receipt = None,
             comments: list = None,
         ):
+        self._valid_payment_methods = ["cash", "credit", "debit", "qrph", "paypal", "venmo"]
+        self._valid_categories = ["salary", "gift", "bonus", "allowance"]
+        if mode_of_payment.lower().strip() not in self._valid_payment_methods:
+            raise cusexc.InvalidCategory(f"Unknown mode of payment: {mode_of_payment}")
+        if category_of_income.lower().strip() not in self._valid_categories:
+            raise cusexc.InvalidCategory(f"Unknown category: {category_of_income}")
         super().__init__(name, amount, mode_of_payment, receipt, comments)
         self._category_of_income = category_of_income
         self._income_id = id_generator("income")
