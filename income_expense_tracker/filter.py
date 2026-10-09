@@ -45,6 +45,7 @@ class Filter:
             return True
         return False
 
+    # returns True if Transaction object matches the filters of a Filter object, else False
     def matches(self, transaction: Transaction) -> bool:
         # by subclass
         if self.transaction_subclass and not isinstance(transaction, self.transaction_subclass):

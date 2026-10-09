@@ -123,6 +123,7 @@ class Expense(Transaction):
             raise ValueError("Quantity must be at least 1.")
         self._quantity = quantity
 
+    # Converts an expense object into a dictionary
     def convert_to_dict(self) -> dict:
         return {
             "expense_id": self._expense_id,
@@ -135,7 +136,8 @@ class Expense(Transaction):
             "receipt": self.receipt,
             "comments": self.comments
         }
-    
+
+    # Saves the object to a json file
     def save_to_json(self, filepath: str = json_path) -> None:
         if os.path.exists(filepath): # Load data if file exists
             try:
@@ -197,6 +199,7 @@ class Income(Transaction):
     def category_of_income(self, category: str) -> None:
         self._category_of_income = category
 
+    # Converts an expense object into a dictionary
     def convert_to_dict(self) -> dict:
         return {
             "income_id": self._income_id,
@@ -208,7 +211,8 @@ class Income(Transaction):
             "receipt": self.receipt,
             "comments": self.comments
         }
-    
+
+    # Saves the object to a json file
     def save_to_json(self, filepath: str = json_path) -> None:
         if os.path.exists(filepath): # Load data if file exists
             try:
