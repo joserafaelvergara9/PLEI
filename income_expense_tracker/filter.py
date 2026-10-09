@@ -3,7 +3,7 @@ from income_expense_tracker.transaction import Transaction, Expense, Income
 class Filter:
     def __init__(
             self, 
-            transaction_subclass: str | None, 
+            transaction_subclass: type | None, 
             category: str | None, 
             mode_of_payment: str | None,
             timestamp_range: tuple | None,
@@ -16,7 +16,7 @@ class Filter:
         self._amount_range = amount_range
 
     @property
-    def transaction_subclass(self) -> str | None:
+    def transaction_subclass(self) -> type | None:
         return self._transaction_subclass
 
     @property
