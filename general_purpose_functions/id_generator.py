@@ -1,4 +1,4 @@
-import custom_exceptions as cusexc
+import general_purpose_functions.custom_exceptions as custom_exceptions
 import json
 
 def id_generator(id_type):
