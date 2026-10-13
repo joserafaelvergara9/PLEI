@@ -236,7 +236,7 @@ class Income(Transaction):
             f"Category of Income:  {self.category_of_income}\n"
             f"Timestamp:           {self.timestamp}\n"
             f"Receipt:             {self.receipt}\n"
-            f"Comments:            {', '.join(self.comments)}"
+            f"Comments:            {self.comments}"
         )
 
 
