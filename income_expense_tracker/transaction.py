@@ -162,7 +162,7 @@ class Expense(Transaction):
             f"Category of Payment: {self.category_of_payment}\n"
             f"Timestamp:           {self.timestamp}\n"
             f"Receipt:             {self.receipt}\n"
-            f"Comments:            {', '.join(self.comments)}"
+            f"Comments:            {self.comments}"
         )
 
         
