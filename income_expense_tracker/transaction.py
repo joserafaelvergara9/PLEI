@@ -18,7 +18,7 @@ root_dir = Path(__file__).resolve().parent.parent # Get path to your root folder
 sys.path.append(str(root_dir)) # Add root folder to sys.path
 from abc import ABC, abstractmethod
 from datetime import datetime
-from receipt import Receipt
+from income_expense_tracker.receipt import Receipt
 from general_purpose_functions.id_generator import id_generator
 import general_purpose_functions.custom_exceptions as cusexc
 
