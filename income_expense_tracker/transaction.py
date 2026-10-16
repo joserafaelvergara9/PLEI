@@ -9,15 +9,19 @@
 
 ## RENAME FILTERTYPE TO FILTER AND MAKE IT COMPOSITION TO TRANSHISTORY
 
-
-from abc import ABC, abstractmethod
-from receipt import Receipt
-from general_purpose_functions.id_generator import id_generator
-import general_purpose_functions.custom_exceptions as cusexc
-from datetime import datetime
+import sys
 import json
 import csv ## TO DO: Move the valid categories and methods to the CSV
 import os
+from pathlib import Path
+root_dir = Path(__file__).resolve().parent.parent # Get path to your root folder
+sys.path.append(str(root_dir)) # Add root folder to sys.path
+from abc import ABC, abstractmethod
+from datetime import datetime
+from income_expense_tracker.receipt import Receipt
+from general_purpose_functions.id_generator import id_generator
+import general_purpose_functions.custom_exceptions as cusexc
+
 
 VALID_PAYMENT_METHODS = ["cash", "credit", "debit", "qrph", "paypal", "venmo"]
 
@@ -150,7 +154,7 @@ class Expense(Transaction):
         data.append(self.convert_to_dict()) # Append the entry
         os.makedirs(os.path.dirname(filepath), exist_ok=True) # Check if target directory exists again (?)
         with open(filepath, "w", encoding="utf-8") as file: # Write to json
-            json.dump(data, file, indent=4)
+            json.dump(data, file, default=str, indent=4)
 
     def __str__(self) -> str:
         return (
@@ -225,7 +229,7 @@ class Income(Transaction):
         data.append(self.convert_to_dict()) # Append the entry
         os.makedirs(os.path.dirname(filepath), exist_ok=True) # Check if target directory exists again (?)
         with open(filepath, "w", encoding="utf-8") as file: # Write to json
-            json.dump(data, file, indent=4)
+            json.dump(data, file, default=str, indent=4)
 
     def __str__(self) -> str:
         return (

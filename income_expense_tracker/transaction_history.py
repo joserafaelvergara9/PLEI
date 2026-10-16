@@ -1,19 +1,13 @@
 import sys
 from pathlib import Path
-
-# Step 1: Get the path to your root folder ("your_project")
-root_dir = Path(__file__).resolve().parent.parent
-
-# Step 2: Add it to sys.path
-sys.path.append(str(root_dir))
-
-# Step 3: Now import from general_purpose_functions
-import general_purpose_functions.custom_exceptions as custom_exceptions
+root_dir = Path(__file__).resolve().parent.parent # Get path to your root folder
+sys.path.append(str(root_dir)) # Add root folder to sys.path
+import general_purpose_functions.custom_exceptions as cusexc
 import general_purpose_functions.id_generator as id_generator
-
 
 import transaction as tr
 import filter as flt
+import json
 
 
 
@@ -21,20 +15,28 @@ class TransactionHistory:
     def __init__(self, transactions):
         self.transactions = transactions
 
-    def display_transaction_history(self):
+
+
+    def display_transaction_history(self): #goes thru each transaction in the list and prints it out
         print("Transaction History:")
         for transaction in self.transactions:
             print("**********************")
             print(transaction)
             print("**********************")
 
-    def add_transaction(self, transaction):
+    
+
+    def add_transaction(self, transaction):     #puts the transaction into the list of transactions, and then updates its corresponding json file
         self.transactions.append(transaction)
+        transaction.save_to_json(transaction.json_path)
 
-    def remove_transaction(self, transaction):
-        self.transactions.remove(transaction)
+    def remove_transaction(self, transaction):  #removes the transaction from the list of transactions
+        if transaction in self.transactions:
+            self.transactions.remove(transaction)
+            with open(transaction.json_path, "w", encoding="utf-8") as file:
+                json.dump(self.transactions, file, default=str, indent=4)
 
-    def export_transaction_history():
+    def export_transaction_history(self):
         pass
 
     def filter_transactions(self, filter: flt.Filter):
@@ -90,32 +92,47 @@ class TransactionHistory:
 
 transaction_history = TransactionHistory([])
 
-transaction1 = tr.Income("october 13 allowance", 2500.00, "cash", "allowance", receipt = None, comments = "I have extra allowance!")
-transaction2 = tr.Expense("mom's groceries", 1500.00, "credit", "groceries", receipt = None, comments = "I bought groceries for the week.")
-transaction3 = tr.Expense("uber ride", 500.00, "cash", "transportation", receipt = None, comments = "I took an uber ride to school.")
-transaction4 = tr.Income("october 20 allowance", 2500.00, "cash", "allowance", receipt = None, comments = "I have extra allowance!")
-transaction5 = tr.Expense("lunch", 300.00, "cash", "food", receipt = None, comments = "I bought lunch at school.")
-transaction6 = tr.Expense("movie ticket", 400.00, "credit", "personal", receipt = None, comments = "I watched a movie with friends.")
-transaction7 = tr.Income("october 27 allowance", 2500.00, "cash", "allowance", receipt = None, comments = "I have extra allowance!")
-transaction8 = tr.Expense("bus fare", 100.00, "cash", "transportation", receipt = None, comments = "I took the bus to school.")
-transaction9 = tr.Expense("gym membership", 2000.00, "credit", "personal", receipt = None, comments = "I paid for my gym membership.")
-transaction10 = tr.Income("october 31 allowance", 2500.00, "cash", "allowance", receipt = None, comments = "I have extra allowance!")
 
 
 #print(transaction1)
 #print()
 #print(transaction2)
 
+
+transaction1 = tr.Income("october 13 allowance", 2500.00, "cash", "allowance", receipt = None, comments = "I have extra allowance!")
 transaction_history.add_transaction(transaction1)
+
+transaction2 = tr.Expense("mom's groceries", 1500.00, "credit", "groceries", receipt = None, comments = "I bought groceries for the week.")
 transaction_history.add_transaction(transaction2)
+
+transaction3 = tr.Expense("uber ride", 500.00, "cash", "transportation", receipt = None, comments = "I took an uber ride to school.")
 transaction_history.add_transaction(transaction3)
+
+transaction4 = tr.Income("october 20 allowance", 2500.00, "cash", "allowance", receipt = None, comments = "I have extra allowance!")
 transaction_history.add_transaction(transaction4)
+
+transaction5 = tr.Expense("lunch", 300.00, "cash", "food", receipt = None, comments = "I bought lunch at school.")
 transaction_history.add_transaction(transaction5)
+
+transaction6 = tr.Expense("movie ticket", 400.00, "credit", "personal", receipt = None, comments = "I watched a movie with friends.")
 transaction_history.add_transaction(transaction6)
+
+transaction7 = tr.Income("october 27 allowance", 2500.00, "cash", "allowance", receipt = None, comments = "I have extra allowance!")
 transaction_history.add_transaction(transaction7)
+
+transaction8 = tr.Expense("bus fare", 100.00, "cash", "transportation", receipt = None, comments = "I took the bus to school.")
 transaction_history.add_transaction(transaction8)
+
+transaction9 = tr.Expense("gym membership", 2000.00, "credit", "personal", receipt = None, comments = "I paid for my gym membership.")
 transaction_history.add_transaction(transaction9)
+
+transaction10 = tr.Income("october 31 allowance", 2500.00, "cash", "allowance", receipt = None, comments = "I have extra allowance!")
 transaction_history.add_transaction(transaction10)
+
+
+#transaction_history.remove_transaction(transaction3)
+#transaction_history.remove_transaction(transaction10)
+
 #transaction_history.display_transaction_history()
 #transaction_history.search_by_id("exp-0000")
 #transaction_history.search_by_name("mom's groceries")
