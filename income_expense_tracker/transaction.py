@@ -154,7 +154,7 @@ class Expense(Transaction):
         data.append(self.convert_to_dict()) # Append the entry
         os.makedirs(os.path.dirname(filepath), exist_ok=True) # Check if target directory exists again (?)
         with open(filepath, "w", encoding="utf-8") as file: # Write to json
-            json.dump(data, file, indent=4)
+            json.dump(data, file, default=str, indent=4)
 
     def __str__(self) -> str:
         return (
@@ -229,7 +229,7 @@ class Income(Transaction):
         data.append(self.convert_to_dict()) # Append the entry
         os.makedirs(os.path.dirname(filepath), exist_ok=True) # Check if target directory exists again (?)
         with open(filepath, "w", encoding="utf-8") as file: # Write to json
-            json.dump(data, file, indent=4)
+            json.dump(data, file, default=str, indent=4)
 
     def __str__(self) -> str:
         return (
