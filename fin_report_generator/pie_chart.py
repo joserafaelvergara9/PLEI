@@ -19,7 +19,7 @@ class PieChart:
             attribute: str,
             transactions: List[Transaction]
     ):
-        self._chart_id = id_generator(PieChart)
+        self._chart_id = id_generator("pieChart")
         self._attribute = attribute
         self._transactions = transactions
         self._percentages: Dict[str, float] = {}
@@ -110,11 +110,12 @@ def pie_chart_test():
         Expense(name="Electric Bill", amount=450.0, mode_of_payment="debit", category_of_payment="utilities", quantity=1),
         Expense(name="Supermarket 2", amount=550.0, mode_of_payment="cash", category_of_payment="groceries", quantity=1),
         Expense(name="McDo", amount=500.0, mode_of_payment="credit", category_of_payment="food", quantity=1),
-        Expense(name="Paying Mr. Soprano", amount=800.0, mode_of_payment="cash", category_of_payment="debt", quantity=1)
+        Expense(name="Paying Mr. Soprano", amount=800.0, mode_of_payment="cash", category_of_payment="debt", quantity=1),
+        Expense(name="FX Ride", amount=40.0, mode_of_payment="cash", category_of_payment="transportation", quantity=2)
     ]
 
     chart = PieChart(attribute="_category_of_payment", transactions=oct_expenses)
-    custom_colors = ["#ad2c2c", "#006ad4", "#ffda1f", "#32a438"]
+    custom_colors = ["#ad2c2c", "#006ad4", "#ffda1f", "#32a438", "#9010ba"]
     fig = chart.generate_pie_chart(colors=custom_colors)
     pyplot.show()
 
