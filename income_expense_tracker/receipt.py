@@ -1,6 +1,10 @@
 import datetime
 import json
+import sys
 import os
+from pathlib import Path
+root_dir = Path(__file__).resolve().parent.parent # Get path to your root folder
+sys.path.append(str(root_dir)) # Add root folder to sys.path
 from general_purpose_functions.id_generator import id_generator
 from datetime import datetime
 

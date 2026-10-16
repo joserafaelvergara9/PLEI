@@ -9,15 +9,19 @@
 
 ## RENAME FILTERTYPE TO FILTER AND MAKE IT COMPOSITION TO TRANSHISTORY
 
-
-from abc import ABC, abstractmethod
-from receipt import Receipt
-from general_purpose_functions.id_generator import id_generator
-import general_purpose_functions.custom_exceptions as cusexc
-from datetime import datetime
+import sys
 import json
 import csv ## TO DO: Move the valid categories and methods to the CSV
 import os
+from pathlib import Path
+root_dir = Path(__file__).resolve().parent.parent # Get path to your root folder
+sys.path.append(str(root_dir)) # Add root folder to sys.path
+from abc import ABC, abstractmethod
+from datetime import datetime
+from receipt import Receipt
+from general_purpose_functions.id_generator import id_generator
+import general_purpose_functions.custom_exceptions as cusexc
+
 
 VALID_PAYMENT_METHODS = ["cash", "credit", "debit", "qrph", "paypal", "venmo"]
 

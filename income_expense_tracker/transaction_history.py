@@ -1,20 +1,10 @@
 import sys
 from pathlib import Path
-
-# Step 1: Get the path to your root folder ("your_project")
-root_dir = Path(__file__).resolve().parent.parent
-
-# Step 2: Add it to sys.path
-sys.path.append(str(root_dir))
-
-# Step 3: Now import from general_purpose_functions
-import general_purpose_functions.custom_exceptions as custom_exceptions
+root_dir = Path(__file__).resolve().parent.parent # Get path to your root folder
+sys.path.append(str(root_dir)) # Add root folder to sys.path
+import general_purpose_functions.custom_exceptions as cusexc
 import general_purpose_functions.id_generator as id_generator
-
-
 import transaction
-
-
 
 class TransactionHistory:
     def __init__(self, transactions):
