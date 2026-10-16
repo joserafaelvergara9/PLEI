@@ -19,10 +19,16 @@ class PieChart:
             attribute: str,
             transactions: List[Transaction]
     ):
+        self._chart_id = id_generator(PieChart)
         self._attribute = attribute
         self._transactions = transactions
         self._percentages: Dict[str, float] = {}
         self.calculate_percentages()
+        self._json_path = "fin_report_generator/frg_json_files/pie_charts.json"
+
+    @property
+    def json_path(self) -> str:
+        return self._json_path
 
     @property
     def attribute(self) -> str:
@@ -75,6 +81,27 @@ class PieChart:
         os.makedirs(os.path.dirname(filename), exist_ok=True)
         fig.savefig(filename, bbox_inches='tight')
         pyplot.close(fig) 
+
+    def convert_to_dict(self) -> Dict:
+        return {
+            "chart_id": self._chart_id,
+            "attribute": self._attribute,
+            "percentages": self._percentages
+        }
+
+    def save_to_json(self, filepath: str = json_path) -> None:
+        if os.path.exists(filepath):
+            try:
+                with open(filepath, "r", encoding="utf-8") as file:
+                    data = json.load(file)
+            except json.JSONDecodeError:
+                data = []
+        else:
+            data = []
+        data.append(self.convert_to_dict())
+        os.makedirs(os.path.dirname(filepath), exist_ok=True)
+        with open(filepath, "w", encoding="utf-8") as file:
+            json.dump(data, file, indent=4, default=str)
 
 def pie_chart_test():
     oct_expenses = [
