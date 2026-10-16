@@ -93,7 +93,15 @@ class Expense(Transaction):
             receipt: Receipt = None,
             comments: list = None,
         ):
-        self._valid_categories = ["housing", "utilities", "insurance", "debt", "groceries", "food", "transportation", "grooming", "healthcare", "personal"]
+
+
+        # loads list from expense_categories for self._valid_categories
+        custom_categories_path = Path("income_expense_tracker/custom_categories/expense_categories.json")
+        with open(custom_categories_path, "r") as file:
+            self._valid_categories = json.load(file)
+            print(self._valid_categories)
+
+        # checks for valid expense categories
         if mode_of_payment.lower().strip() not in VALID_PAYMENT_METHODS:
             raise cusexc.InvalidCategory(f"Unknown mode of payment: {mode_of_payment}")
         if category_of_payment.lower().strip() not in self._valid_categories:
@@ -180,7 +188,14 @@ class Income(Transaction):
             receipt: Receipt = None,
             comments: list = None,
         ):
-        self._valid_categories = ["salary", "gift", "bonus", "allowance"]
+
+        # loads list from income_categories for self._valid_categories
+        custom_categories_path = Path("income_expense_tracker/custom_categories/income_categories.json")
+        with open(custom_categories_path, "r") as file:
+            self._valid_categories = json.load(file)
+            print(self._valid_categories)
+
+        # checks for valid income categories
         if mode_of_payment.lower().strip() not in VALID_PAYMENT_METHODS:
             raise cusexc.InvalidCategory(f"Unknown mode of payment: {mode_of_payment}")
         if category_of_income.lower().strip() not in self._valid_categories:
@@ -242,6 +257,10 @@ class Income(Transaction):
             f"Receipt:             {self.receipt}\n"
             f"Comments:            {self.comments}"
         )
+
+
+if __name__ == "__main__":
+    expense1 = Expense("Allowance", 1000, "cash", "grooming", 1)
 
 
 '''
