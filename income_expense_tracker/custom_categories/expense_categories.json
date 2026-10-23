@@ -1,12 +1,1 @@
-[
-    "housing", 
-    "utilities", 
-    "insurance", 
-    "debt", 
-    "groceries", 
-    "food", 
-    "transportation", 
-    "grooming", 
-    "healthcare", 
-    "personal"
-]
+["housing", "utilities", "debt", "groceries", "food", "transportation", "grooming", "healthcare", "personal"]
