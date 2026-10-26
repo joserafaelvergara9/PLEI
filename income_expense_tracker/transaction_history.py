@@ -4,7 +4,7 @@ root_dir = Path(__file__).resolve().parent.parent # Get path to your root folder
 sys.path.append(str(root_dir)) # Add root folder to sys.path
 import general_purpose_functions.custom_exceptions as cusexc
 import general_purpose_functions.id_generator as id_generator
-
+import os
 import transaction as tr
 import filter as flt
 import json
@@ -32,12 +32,45 @@ class TransactionHistory:
 
     def remove_transaction(self, transaction):  #removes the transaction from the list of transactions
         if transaction in self.transactions:
+            temp_json_path = transaction.json_path
             self.transactions.remove(transaction)
-            with open(transaction.json_path, "w", encoding="utf-8") as file:
-                json.dump(self.transactions, file, default=str, indent=4)
+            with open(temp_json_path, "w", encoding="utf-8") as file:
+                json.dump(self.transactions, file, default=str, indent=2)
 
     def export_transaction_history(self):
-        pass
+        data = []
+
+
+        for transaction in self.transactions:
+
+            if (isinstance(transaction, tr.Income)):
+                new_transaction_format = {
+                        "income_id": transaction._income_id,
+                        "name": transaction.name,
+                        "amount": transaction.amount,
+                        "mode_of_payment": transaction.mode_of_payment,
+                        "category_of_income": transaction.category_of_income,
+                        "timestamp": transaction.timestamp,
+                        "receipt": transaction.receipt,
+                        "comments": transaction.comments
+                    }
+                data.append(new_transaction_format)
+            elif (isinstance(transaction, tr.Expense)):
+                new_transaction_format = {
+                        "expense_id": transaction._expense_id,
+                        "name": transaction.name,
+                        "amount": transaction.amount,
+                        "mode_of_payment": transaction.mode_of_payment,
+                        "category_of_payment": transaction.category_of_payment,
+                        "quantity": transaction.quantity,
+                        "timestamp": transaction.timestamp,
+                        "receipt": transaction.receipt,
+                        "comments": transaction.comments
+                    }
+                data.append(new_transaction_format)
+        os.makedirs(os.path.dirname("iet_json_files/exported_data.json"), exist_ok=True) # Check if target directory exists again (?)
+        with open("iet_json_files/exported_data.json", "w", encoding="utf-8") as file: # Write to json
+            json.dump(data, file, default=str, indent=4)
 
     def filter_transactions(self, filter: flt.Filter):
         filtered_transactions = []
@@ -88,9 +121,40 @@ class TransactionHistory:
             print("Searched name cannot be found.")
         
 
-
-
 transaction_history = TransactionHistory([])
+
+print(transaction_history.display_transaction_history())
+
+with open("iet_json_files/expenses.json", "r", encoding="utf-8") as file:
+    #transaction_history.transactions = json.load(file)
+    temp_expense_history = json.load(file)
+
+with open("iet_json_files/income.json", "r", encoding="utf-8") as file:
+    #transaction_history.transactions = json.load(file)
+    temp_income_history = json.load(file)
+
+
+print(temp_expense_history[1])
+
+
+for i in range(1, len(temp_expense_history)):
+    transaction_history.transactions.append(tr.Expense(**temp_expense_history[i]))
+
+
+for i in range(1, len(temp_income_history)):
+    transaction_history.transactions.append(tr.Income(**temp_income_history[i]))
+
+#for expense in temp_expense_history:
+#    transaction_history.transactions.append(tr.Expense(**expense))
+
+#for income in temp_income_history:
+#    transaction_history.transactions.append(tr.Income(**income))
+
+transaction_history.display_transaction_history()
+
+
+
+
 
 
 
@@ -98,7 +162,7 @@ transaction_history = TransactionHistory([])
 #print()
 #print(transaction2)
 
-
+"""
 transaction1 = tr.Income("october 13 allowance", 2500.00, "cash", "allowance", receipt = None, comments = "I have extra allowance!")
 transaction_history.add_transaction(transaction1)
 
@@ -128,7 +192,7 @@ transaction_history.add_transaction(transaction9)
 
 transaction10 = tr.Income("october 31 allowance", 2500.00, "cash", "allowance", receipt = None, comments = "I have extra allowance!")
 transaction_history.add_transaction(transaction10)
-
+"""
 
 #transaction_history.remove_transaction(transaction3)
 #transaction_history.remove_transaction(transaction10)
@@ -137,10 +201,12 @@ transaction_history.add_transaction(transaction10)
 #transaction_history.search_by_id("exp-0000")
 #transaction_history.search_by_name("mom's groceries")
 
-filter1 = flt.Filter(transaction_subclass=tr.Expense, category=None, mode_of_payment="cash", timestamp_range=None, amount_range=None)
+#filter1 = flt.Filter(transaction_subclass=tr.Expense, category=None, mode_of_payment="cash", timestamp_range=None, amount_range=None)
 
 
-transaction_history.filter_transactions(filter1)
+#transaction_history.filter_transactions(filter1)
+
+#transaction_history.display_transaction_history()
 
 
 #print("hi")

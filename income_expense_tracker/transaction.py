@@ -33,12 +33,16 @@ class Transaction(ABC):
             amount: float, 
             mode_of_payment: str,
             receipt: Receipt = None,
-            comments: list = None
+            comments: list = None,
+            timestamp: datetime = None
         ):
         self._name = name
         self._amount = amount
         self._mode_of_payment = mode_of_payment
-        self._timestamp = datetime.now()
+        if timestamp == None:
+            self._timestamp = datetime.now()
+        else:
+            self._timestamp = timestamp
         self._receipt = receipt
         self._comments = comments if comments is not None else []
 
@@ -92,6 +96,8 @@ class Expense(Transaction):
             quantity: int = 1,
             receipt: Receipt = None,
             comments: list = None,
+            expense_id: str = None,
+            timestamp: datetime = None
         ):
         self._valid_categories = ["housing", "utilities", "insurance", "debt", "groceries", "food", "transportation", "grooming", "healthcare", "personal"]
         if mode_of_payment.lower().strip() not in VALID_PAYMENT_METHODS:
@@ -99,11 +105,15 @@ class Expense(Transaction):
         if category_of_payment.lower().strip() not in self._valid_categories:
             raise cusexc.InvalidCategory(f"Unknown category: {category_of_payment}")
         else:
-            super().__init__(name, amount, mode_of_payment, receipt, comments)
+            super().__init__(name, amount, mode_of_payment, receipt, comments, timestamp)
             self._category_of_payment = category_of_payment
             self._quantity = quantity
-            self._expense_id = id_generator("expense")
-            self._json_path = "income_expense_tracker/iet_json_files/expenses.json"
+            self._json_path = "iet_json_files/expenses.json"
+            if expense_id == None:
+                self._expense_id = id_generator("expense")
+            else:
+                self._expense_id = expense_id
+        
     
     @property
     def category_of_payment(self) -> str:
@@ -179,6 +189,8 @@ class Income(Transaction):
             category_of_income: str,
             receipt: Receipt = None,
             comments: list = None,
+            income_id: str = None,
+            timestamp: datetime = None
         ):
         self._valid_categories = ["salary", "gift", "bonus", "allowance"]
         if mode_of_payment.lower().strip() not in VALID_PAYMENT_METHODS:
@@ -186,10 +198,15 @@ class Income(Transaction):
         if category_of_income.lower().strip() not in self._valid_categories:
             raise cusexc.InvalidCategory(f"Unknown category: {category_of_income}")
         else:
-            super().__init__(name, amount, mode_of_payment, receipt, comments)
+            super().__init__(name, amount, mode_of_payment, receipt, comments, timestamp)
             self._category_of_income = category_of_income
-            self._income_id = id_generator("income")
-            self._json_path = "income_expense_tracker/iet_json_files/income.json"
+            self._json_path = "iet_json_files/income.json"
+            if income_id == None:
+                self._income_id = id_generator("income")
+            else:
+                self._income_id = income_id
+
+            
     
     @property
     def category_of_income(self) -> str:

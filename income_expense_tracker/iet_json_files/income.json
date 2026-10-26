@@ -7,6 +7,249 @@
         "category_of_income": "Test Category",
         "timestamp": "",
         "receipt": "receipt",
-        "comments": ["comment 1", "comment 2"]
+        "comments": [
+            "comment 1",
+            "comment 2"
+        ]
+    },
+    {
+        "income_id": "INC-0001",
+        "name": "october 13 allowance",
+        "amount": 2500.0,
+        "mode_of_payment": "cash",
+        "category_of_income": "allowance",
+        "timestamp": "2026-10-23 11:18:49.007058",
+        "receipt": null,
+        "comments": "I have extra allowance!"
+    },
+    {
+        "income_id": "INC-0002",
+        "name": "october 20 allowance",
+        "amount": 2500.0,
+        "mode_of_payment": "cash",
+        "category_of_income": "allowance",
+        "timestamp": "2026-10-23 11:18:49.034628",
+        "receipt": null,
+        "comments": "I have extra allowance!"
+    },
+    {
+        "income_id": "INC-0003",
+        "name": "october 27 allowance",
+        "amount": 2500.0,
+        "mode_of_payment": "cash",
+        "category_of_income": "allowance",
+        "timestamp": "2026-10-23 11:18:49.106699",
+        "receipt": null,
+        "comments": "I have extra allowance!"
+    },
+    {
+        "income_id": "INC-0004",
+        "name": "october 31 allowance",
+        "amount": 2500.0,
+        "mode_of_payment": "cash",
+        "category_of_income": "allowance",
+        "timestamp": "2026-10-23 11:18:49.177075",
+        "receipt": null,
+        "comments": "I have extra allowance!"
+    },
+    {
+        "income_id": "INC-0005",
+        "name": "october 13 allowance",
+        "amount": 2500.0,
+        "mode_of_payment": "cash",
+        "category_of_income": "allowance",
+        "timestamp": "2026-10-23 11:19:25.205081",
+        "receipt": null,
+        "comments": "I have extra allowance!"
+    },
+    {
+        "income_id": "INC-0006",
+        "name": "october 20 allowance",
+        "amount": 2500.0,
+        "mode_of_payment": "cash",
+        "category_of_income": "allowance",
+        "timestamp": "2026-10-23 11:19:25.233762",
+        "receipt": null,
+        "comments": "I have extra allowance!"
+    },
+    {
+        "income_id": "INC-0007",
+        "name": "october 27 allowance",
+        "amount": 2500.0,
+        "mode_of_payment": "cash",
+        "category_of_income": "allowance",
+        "timestamp": "2026-10-23 11:19:25.285952",
+        "receipt": null,
+        "comments": "I have extra allowance!"
+    },
+    {
+        "income_id": "INC-0008",
+        "name": "october 31 allowance",
+        "amount": 2500.0,
+        "mode_of_payment": "cash",
+        "category_of_income": "allowance",
+        "timestamp": "2026-10-23 11:19:25.355241",
+        "receipt": null,
+        "comments": "I have extra allowance!"
+    },
+    {
+        "income_id": "INC-0009",
+        "name": "october 13 allowance",
+        "amount": 2500.0,
+        "mode_of_payment": "cash",
+        "category_of_income": "allowance",
+        "timestamp": "2026-10-23 11:30:48.700738",
+        "receipt": null,
+        "comments": "I have extra allowance!"
+    },
+    {
+        "income_id": "INC-0010",
+        "name": "october 20 allowance",
+        "amount": 2500.0,
+        "mode_of_payment": "cash",
+        "category_of_income": "allowance",
+        "timestamp": "2026-10-23 11:30:48.748788",
+        "receipt": null,
+        "comments": "I have extra allowance!"
+    },
+    {
+        "income_id": "INC-0011",
+        "name": "october 27 allowance",
+        "amount": 2500.0,
+        "mode_of_payment": "cash",
+        "category_of_income": "allowance",
+        "timestamp": "2026-10-23 11:30:48.836448",
+        "receipt": null,
+        "comments": "I have extra allowance!"
+    },
+    {
+        "income_id": "INC-0012",
+        "name": "october 31 allowance",
+        "amount": 2500.0,
+        "mode_of_payment": "cash",
+        "category_of_income": "allowance",
+        "timestamp": "2026-10-23 11:30:48.888687",
+        "receipt": null,
+        "comments": "I have extra allowance!"
+    },
+    {
+        "income_id": "INC-0013",
+        "name": "october 13 allowance",
+        "amount": 2500.0,
+        "mode_of_payment": "cash",
+        "category_of_income": "allowance",
+        "timestamp": "2026-10-23 11:48:47.750646",
+        "receipt": null,
+        "comments": "I have extra allowance!"
+    },
+    {
+        "income_id": "INC-0014",
+        "name": "october 20 allowance",
+        "amount": 2500.0,
+        "mode_of_payment": "cash",
+        "category_of_income": "allowance",
+        "timestamp": "2026-10-23 11:48:47.781897",
+        "receipt": null,
+        "comments": "I have extra allowance!"
+    },
+    {
+        "income_id": "INC-0015",
+        "name": "october 27 allowance",
+        "amount": 2500.0,
+        "mode_of_payment": "cash",
+        "category_of_income": "allowance",
+        "timestamp": "2026-10-23 11:48:47.838460",
+        "receipt": null,
+        "comments": "I have extra allowance!"
+    },
+    {
+        "income_id": "INC-0016",
+        "name": "october 31 allowance",
+        "amount": 2500.0,
+        "mode_of_payment": "cash",
+        "category_of_income": "allowance",
+        "timestamp": "2026-10-23 11:48:47.892322",
+        "receipt": null,
+        "comments": "I have extra allowance!"
+    },
+    {
+        "income_id": "INC-0017",
+        "name": "october 13 allowance",
+        "amount": 2500.0,
+        "mode_of_payment": "cash",
+        "category_of_income": "allowance",
+        "timestamp": "2026-10-23 11:49:19.384965",
+        "receipt": null,
+        "comments": "I have extra allowance!"
+    },
+    {
+        "income_id": "INC-0018",
+        "name": "october 20 allowance",
+        "amount": 2500.0,
+        "mode_of_payment": "cash",
+        "category_of_income": "allowance",
+        "timestamp": "2026-10-23 11:49:19.413500",
+        "receipt": null,
+        "comments": "I have extra allowance!"
+    },
+    {
+        "income_id": "INC-0019",
+        "name": "october 27 allowance",
+        "amount": 2500.0,
+        "mode_of_payment": "cash",
+        "category_of_income": "allowance",
+        "timestamp": "2026-10-23 11:49:19.475459",
+        "receipt": null,
+        "comments": "I have extra allowance!"
+    },
+    {
+        "income_id": "INC-0020",
+        "name": "october 31 allowance",
+        "amount": 2500.0,
+        "mode_of_payment": "cash",
+        "category_of_income": "allowance",
+        "timestamp": "2026-10-23 11:49:19.532061",
+        "receipt": null,
+        "comments": "I have extra allowance!"
+    },
+    {
+        "income_id": "INC-0021",
+        "name": "october 13 allowance",
+        "amount": 2500.0,
+        "mode_of_payment": "cash",
+        "category_of_income": "allowance",
+        "timestamp": "2026-10-23 11:53:15.016113",
+        "receipt": null,
+        "comments": "I have extra allowance!"
+    },
+    {
+        "income_id": "INC-0022",
+        "name": "october 20 allowance",
+        "amount": 2500.0,
+        "mode_of_payment": "cash",
+        "category_of_income": "allowance",
+        "timestamp": "2026-10-23 11:53:15.046782",
+        "receipt": null,
+        "comments": "I have extra allowance!"
+    },
+    {
+        "income_id": "INC-0023",
+        "name": "october 27 allowance",
+        "amount": 2500.0,
+        "mode_of_payment": "cash",
+        "category_of_income": "allowance",
+        "timestamp": "2026-10-23 11:53:15.094783",
+        "receipt": null,
+        "comments": "I have extra allowance!"
+    },
+    {
+        "income_id": "INC-0024",
+        "name": "october 31 allowance",
+        "amount": 2500.0,
+        "mode_of_payment": "cash",
+        "category_of_income": "allowance",
+        "timestamp": "2026-10-23 11:53:15.145366",
+        "receipt": null,
+        "comments": "I have extra allowance!"
     }
 ]

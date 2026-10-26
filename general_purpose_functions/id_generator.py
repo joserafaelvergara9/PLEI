@@ -1,14 +1,18 @@
-import general_purpose_functions.custom_exceptions as custom_exceptions
+import sys
+from pathlib import Path
+root_dir = Path(__file__).resolve().parent.parent # Get path to your root folder
+sys.path.append(str(root_dir)) # Add root folder to sys.path
+import general_purpose_functions.custom_exceptions as cusexc
 import json
 
 def id_generator(id_type):
     match id_type:
         case "income":
-            json_source = "income_expense_tracker/iet_json_files/income.json"
+            json_source = "iet_json_files/income.json"
             id_variable = "income_id"
             prefix = "INC"    
         case "expense":
-            json_source = "income_expense_tracker/iet_json_files/expenses.json"
+            json_source = "iet_json_files/expenses.json"
             id_variable = "expense_id"
             prefix = "EXP"
         case "receipt":
