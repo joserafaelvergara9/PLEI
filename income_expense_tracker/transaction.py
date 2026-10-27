@@ -87,6 +87,14 @@ class Transaction(ABC):
 
 
 class Expense(Transaction):
+    
+    valid_categories = []   
+    # loads list from expense_categories for self._valid_categories
+    custom_categories_path = Path("income_expense_tracker/custom_categories/expense_categories.json")
+    with open(custom_categories_path, "r") as file:
+        valid_categories.extend(json.load(file))
+        print(valid_categories)
+
     def __init__(
             self, 
             name: str, 
@@ -99,10 +107,12 @@ class Expense(Transaction):
             expense_id: str = None,
             timestamp: datetime = None
         ):
-        self._valid_categories = ["housing", "utilities", "insurance", "debt", "groceries", "food", "transportation", "grooming", "healthcare", "personal"]
+
+
+        # checks for valid expense categories
         if mode_of_payment.lower().strip() not in VALID_PAYMENT_METHODS:
             raise cusexc.InvalidCategory(f"Unknown mode of payment: {mode_of_payment}")
-        if category_of_payment.lower().strip() not in self._valid_categories:
+        if category_of_payment.lower().strip() not in self.valid_categories:
             raise cusexc.InvalidCategory(f"Unknown category: {category_of_payment}")
         else:
             super().__init__(name, amount, mode_of_payment, receipt, comments, timestamp)
@@ -136,6 +146,22 @@ class Expense(Transaction):
         if quantity < 1:
             raise ValueError("Quantity must be at least 1.")
         self._quantity = quantity
+
+    # appends to the class-wide copy of valid categories and saves it to expense_categories.json
+    @classmethod
+    def add_valid_category(cls, category_name: str):
+        cls.valid_categories.append(category_name)
+        with open(cls.custom_categories_path, "w") as file:
+            json.dump(cls.valid_categories, file)
+            print(f'saved {cls.valid_categories} to expense_categories.json')
+
+    # pops from the class-wide copy of valid categories and saves it to expense_categories.json
+    @classmethod
+    def delete_valid_category(cls, category_name: str):
+        cls.valid_categories.remove(category_name)
+        with open(cls.custom_categories_path, "w") as file:
+            json.dump(cls.valid_categories, file)
+            print(f'removed {cls.valid_categories} from expense_categories.json')
 
     # Converts an expense object into a dictionary
     def convert_to_dict(self) -> dict:
@@ -181,6 +207,14 @@ class Expense(Transaction):
 
         
 class Income(Transaction):
+
+    valid_categories = []
+    # loads list from income_categories for self._valid_categories
+    custom_categories_path = Path("income_expense_tracker/custom_categories/income_categories.json")
+    with open(custom_categories_path, "r") as file:
+        valid_categories.extend(json.load(file))
+        print(valid_categories)
+
     def __init__(
             self, 
             name: str, 
@@ -192,7 +226,9 @@ class Income(Transaction):
             income_id: str = None,
             timestamp: datetime = None
         ):
-        self._valid_categories = ["salary", "gift", "bonus", "allowance"]
+
+
+        # checks for valid income categories
         if mode_of_payment.lower().strip() not in VALID_PAYMENT_METHODS:
             raise cusexc.InvalidCategory(f"Unknown mode of payment: {mode_of_payment}")
         if category_of_income.lower().strip() not in self._valid_categories:
@@ -219,6 +255,22 @@ class Income(Transaction):
     @category_of_income.setter
     def category_of_income(self, category: str) -> None:
         self._category_of_income = category
+
+    # appends to the class-wide copy of valid categories and saves it to income_categories.json
+    @classmethod
+    def add_valid_category(cls, category_name: str):
+        cls.valid_categories.append(category_name)
+        with open(cls.custom_categories_path, "w") as file:
+            json.dump(cls.valid_categories, file)
+            print(f'saved {cls.valid_categories} to income_categories.json')
+
+    # pops from the class-wide copy of valid categories and saves it to income_categories.json
+    @classmethod
+    def delete_valid_category(cls, category_name: str):
+        cls.valid_categories.remove(category_name)
+        with open(cls.custom_categories_path, "w") as file:
+            json.dump(cls.valid_categories, file)
+            print(f'removed {cls.valid_categories} from income_categories.json')
 
     # Converts an expense object into a dictionary
     def convert_to_dict(self) -> dict:
@@ -259,6 +311,12 @@ class Income(Transaction):
             f"Receipt:             {self.receipt}\n"
             f"Comments:            {self.comments}"
         )
+
+
+if __name__ == "__main__":
+    expense1 = Expense("Allowance", 1000, "cash", "grooming", 1)
+    Income.add_valid_category("insurance")
+    Income.delete_valid_category("insurance")
 
 
 '''
