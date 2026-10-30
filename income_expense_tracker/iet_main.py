@@ -23,7 +23,13 @@ import income_expense_tracker.transaction as transac
 
 
 def main():
-    pass
+    while True:
+        print("Transaction Manager Menu")
+        print("Enter a command below: ")
+        print("(1) ENTER A TRANSACTION: ")
+        print("(2) DELETE A TRANSACTION: ")
+        print("(3) ")
+    
 
 if __name__ == "__main__":
     main()
