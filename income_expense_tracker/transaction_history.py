@@ -69,7 +69,9 @@ class TransactionHistory:
                     data.append(new_transaction_format)
             os.makedirs(os.path.dirname("iet_json_files/exported_income_data.json"), exist_ok=True) # Check if target directory exists again (?)
             with open(temp_json_path, "w", encoding="utf-8") as file: # Write to json
-                json.dump([self.test_income_data] + data, file, default=str, indent=4)
+                #json.dump([self.test_income_data] + data, file, default=str, indent=4)
+                json.dump(data, file, default=str, indent=4)
+            print("Transaction has been successfully removed!")
 
         elif(type(transaction_to_be_removed) == tr.Expense):
             self.transactions.remove(transaction_to_be_removed)
@@ -90,7 +92,9 @@ class TransactionHistory:
                     data.append(new_transaction_format)
             os.makedirs(os.path.dirname("iet_json_files/exported_expense_data.json"), exist_ok=True) # Check if target directory exists again (?)
             with open(temp_json_path, "w", encoding="utf-8") as file: # Write to json
-                json.dump([self.test_expense_data] + data, file, default=str, indent=4)
+                #json.dump([self.test_expense_data] + data, file, default=str, indent=4)
+                json.dump(data, file, default=str, indent=4)
+            print("Transaction has been successfully removed!")
 
                 
     def export_transaction_history(self):
@@ -111,7 +115,8 @@ class TransactionHistory:
                 data.append(new_transaction_format)
         os.makedirs(os.path.dirname("iet_json_files/exported_income_data.json"), exist_ok=True) # Check if target directory exists again (?)
         with open("iet_json_files/exported_income_data.json", "w", encoding="utf-8") as file: # Write to json
-            json.dump([self.test_income_data] + data, file, default=str, indent=4)
+            #json.dump([self.test_income_data] + data, file, default=str, indent=4)
+            json.dump(data, file, default=str, indent=4)
 
 
         for transaction in self.transactions:
@@ -130,7 +135,8 @@ class TransactionHistory:
                 data.append(new_transaction_format)
         os.makedirs(os.path.dirname("iet_json_files/exported_expense_data.json"), exist_ok=True) # Check if target directory exists again (?)
         with open("iet_json_files/exported_expense_data.json", "w", encoding="utf-8") as file: # Write to json
-            json.dump([self.test_expense_data] + data, file, default=str, indent=4)
+            #json.dump([self.test_expense_data] + data, file, default=str, indent=4)
+            json.dump(data, file, default=str, indent=4)
 
 
     def filter_transactions(self, filter: flt.Filter):
@@ -150,10 +156,15 @@ class TransactionHistory:
 
         search_results = []
         for transaction in self.transactions:
-            if isinstance(transaction, tr.Income) and transaction.income_id.lower().strip() == transaction_id.lower().strip():
-                search_results.append(transaction)
-            elif isinstance(transaction, tr.Expense) and transaction.expense_id.lower().strip() == transaction_id.lower().strip():
-                search_results.append(transaction)
+            if isinstance(transaction, tr.Income):
+                
+                print("This is an income!")
+                print(transaction)
+                if transaction._income_id.lower().strip() == transaction_id.lower().strip():
+                    search_results.append(transaction)
+            elif isinstance(transaction, tr.Expense):
+                if transaction._expense_id.lower().strip() == transaction_id.lower().strip():
+                    search_results.append(transaction)
 
         if len(search_results) > 0:
             print("Search Results: ")

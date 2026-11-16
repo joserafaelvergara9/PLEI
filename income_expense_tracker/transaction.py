@@ -87,13 +87,6 @@ class Transaction(ABC):
 
 
 class Expense(Transaction):
-    
-    valid_categories = []   
-    # loads list from expense_categories for self._valid_categories
-    custom_categories_path = Path("income_expense_tracker/custom_categories/expense_categories.json")
-    with open(custom_categories_path, "r") as file:
-        valid_categories.extend(json.load(file))
-        print(valid_categories)
 
     def __init__(
             self, 
@@ -123,7 +116,14 @@ class Expense(Transaction):
                 self._expense_id = id_generator("expense")
             else:
                 self._expense_id = expense_id
-        
+
+
+    valid_categories = []   
+    # loads list from expense_categories for self._valid_categories
+    custom_categories_path = Path("custom_categories/expense_categories.json")
+    with open(custom_categories_path, "r") as file:
+        valid_categories.extend(json.load(file))
+        #print(valid_categories)
     
     @property
     def category_of_payment(self) -> str:
@@ -208,12 +208,6 @@ class Expense(Transaction):
         
 class Income(Transaction):
 
-    valid_categories = []
-    # loads list from income_categories for self._valid_categories
-    custom_categories_path = Path("income_expense_tracker/custom_categories/income_categories.json")
-    with open(custom_categories_path, "r") as file:
-        valid_categories.extend(json.load(file))
-        print(valid_categories)
 
     def __init__(
             self, 
@@ -231,7 +225,7 @@ class Income(Transaction):
         # checks for valid income categories
         if mode_of_payment.lower().strip() not in VALID_PAYMENT_METHODS:
             raise cusexc.InvalidCategory(f"Unknown mode of payment: {mode_of_payment}")
-        if category_of_income.lower().strip() not in self._valid_categories:
+        if category_of_income.lower().strip() not in self.valid_categories:
             raise cusexc.InvalidCategory(f"Unknown category: {category_of_income}")
         else:
             super().__init__(name, amount, mode_of_payment, receipt, comments, timestamp)
@@ -241,6 +235,14 @@ class Income(Transaction):
                 self._income_id = id_generator("income")
             else:
                 self._income_id = income_id
+
+
+    valid_categories = []
+    # loads list from income_categories for self._valid_categories
+    custom_categories_path = Path("custom_categories/income_categories.json")
+    with open(custom_categories_path, "r") as file:
+        valid_categories.extend(json.load(file))
+        #print(valid_categories)
 
             
     

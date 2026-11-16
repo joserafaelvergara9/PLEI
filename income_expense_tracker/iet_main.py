@@ -7,7 +7,7 @@ import general_purpose_functions.id_generator as id_generator
 import os
 
 from receipt import Receipt
-from transaction import Expense, Income
+from transaction import Expense, Income, VALID_PAYMENT_METHODS
 from filter import Filter
 from transaction_history import TransactionHistory
 import json
@@ -22,20 +22,18 @@ class IncomeExpenseTracker:
                    amount, 
                    mode_of_payment, 
                    category_of_income, 
-                   receipt, 
-                   comments, 
-                   timestamp=None, 
-                   income_id=None):
+                   receipt=None, 
+                   comments=None, 
+                   income_id=None,
+                   timestamp=None
+                   ):
         
-        income = Income(self, 
-                        name,
+        income = Income(name,
                         amount,
                         mode_of_payment,
                         category_of_income,
                         receipt,
-                        comments,
-                        timestamp,
-                        income_id
+                        comments
                         )
         self.transaction_history.add_transaction(income)
 
@@ -45,22 +43,18 @@ class IncomeExpenseTracker:
                     mode_of_payment, 
                     category_of_payment, 
                     quantity, 
-                    receipt, 
-                    comments, 
-                    timestamp=None, 
-                    expense_id=None):
+                    receipt=None, 
+                    comments=None
+                    ):
         
-        expense = Expense(self, 
-                    name,
-                    amount, 
-                    mode_of_payment, 
-                    category_of_payment, 
-                    quantity, 
-                    receipt, 
-                    comments,
-                    timestamp,
-                    expense_id 
-                    )
+        expense = Expense(name,
+                          amount, 
+                          mode_of_payment, 
+                        category_of_payment, 
+                        quantity, 
+                        receipt, 
+                        comments
+                        )
         self.transaction_history.add_transaction(expense)
 
     def filter_transactions(self, filter_criteria):
@@ -69,24 +63,22 @@ class IncomeExpenseTracker:
 
 def show_menu():
     print("Income and Expense Tracker")
-    print("1. Add Income")
-    print("2. Add Expense")
-    print("3. Remove Income")
-    print("4. Remove Expense")
-    print("5. Show Transaction History")
-    print("6. Search Transactions by ID")
-    print("7. Filter Transactions")
-    print("8. Export Transactions to CSV")
+    print("1. Add Transaction")
+    print("2. Remove Transaction")
+    print("3. Show Transaction History")
+    print("4. Search Transactions by ID")
+    print("5. Search Transactions by Name")
+    print("6. Filter Transactions")
+    print("7. Export Transactions")
     print("9. Exit")
 
 def show_filter_menu():
     print("Filter Transactions")
-    print("1. Filter by Name")
-    print("2. Filter by Amount")
+    print("1. Filter by Transaction Subclass")
+    print("2. Filter by Transaction Category")
     print("3. Filter by Mode of Payment")
-    print("4. Filter by Category of Payment")
-    print("5. Filter by Date")
-    print("6. Back to Main Menu")
+    print("4. Filter by Time Range")
+    print("5. Filter by Amount Range")
 
 def main():
     tracker = IncomeExpenseTracker()
@@ -97,10 +89,10 @@ def main():
         temp_expense_history = json.load(file)
     with open("iet_json_files/income.json", "r", encoding="utf-8") as file:
         temp_income_history = json.load(file)
-    for i in range(1, len(temp_expense_history)):
-        tracker.transaction_history.add_transaction(Expense(**temp_expense_history[i]))
-    for i in range(1, len(temp_income_history)):
-        tracker.transaction_history.add_transaction(Income(**temp_income_history[i]))
+    for i in range(0, len(temp_expense_history)):
+        tracker.transaction_history.transactions.append(Expense(**temp_expense_history[i]))
+    for i in range(0, len(temp_income_history)):
+        tracker.transaction_history.transactions.append(Income(**temp_income_history[i]))
 
 
     while True:
@@ -110,84 +102,96 @@ def main():
         match choice:
             case "1":
                 transaction_choice = input("Enter '1' to create an income transaction or '2' to create an expense transaction: ")
+                
                 match transaction_choice:
-
-                    case "1":
+                    case "1":   #ADD TRANSACTION
                         #ADD NEW INCOME TRANSACTION
                         name = input("Enter income name: ")
                         amount = float(input("Enter income amount: "))
+                        print(VALID_PAYMENT_METHODS)
                         mode_of_payment = input("Enter income mode of payment: ")
+                        print(Income.valid_categories)
                         category_of_income = input("Enter income category: ")
                         comments = input("Enter any comments: ")
                         tracker.add_income(name=name, amount=amount, mode_of_payment=mode_of_payment, category_of_income=category_of_income, comments=comments)
+                        print("Expense Transaction was successfully created!")
 
                     case "2":     #ADD NEW EXPENSE TRANSACTION
                         name = input("Enter expense name: ")
                         amount = float(input("Enter expense amount: "))
+                        print(VALID_PAYMENT_METHODS)
                         mode_of_payment = input("Enter expense mode of payment: ")
+                        print(Expense.valid_categories)
                         category_of_payment = input("Enter expense category: ")
                         quantity = int(input("Enter quantity: "))
                         comments = input("Enter any comments: ")
                         tracker.add_expense(name=name, amount=amount, mode_of_payment=mode_of_payment, category_of_payment=category_of_payment, quantity=quantity, comments=comments)
-
+                        print("Expense Transaction was successfully created!")
                     case _:
                         print("Invalid choice. Please try again.")
 
 
             case "2":     #REMOVE TRANSACTION
                 transaction_id = input("Enter transaction ID to remove: ")
-                transaction = tracker.transaction_history.search_transaction_by_id(transaction_id)
-                tracker.remove_transaction(transaction)
+                transaction = tracker.transaction_history.search_by_id(transaction_id)
+                if transaction != None:
+                    tracker.transaction_history.remove_transaction(transaction)
 
             case "3":     #SHOW TRANSACTION HISTORY
                 print(tracker.transaction_history.display_transaction_history())
 
             case "4":     #SEARCH TRANSACTION BY ID
                 transaction_id = input("Enter transaction ID to search: ")
-                print(tracker.transaction_history.search_transaction_by_id(transaction_id))
+                print(tracker.transaction_history.search_by_id(transaction_id))
 
             case "5":     #SEARCH BY NAME
                 name = input("Enter transaction name to search: ")
-                print(tracker.transaction_history.search_transaction_by_name(name))
+                print(tracker.transaction_history.search_by_name(name))
 
             case "6":     #FILTER TRANSACTIONS
                 show_filter_menu()
 
                 while True:
-                    filter_choice = input("Would you like to enter a transaction subclass?: (y/n)")
+                    filter_choice = input("Would you like to enter a transaction subclass? (y/n): ")
                     match filter_choice:
                         case "y":
                             transaction_subclass = input("Enter a type of transaction ('income' or 'expense')")
+                            break
                         case "n":
+                            transaction_subclass = None
                             print("OK, transaction subclass will not be applied in the filter.")
                             break
                         case _:
                             print("Invalid choice!")
 
                 while True:
-                    filter_choice = input("Would you like to enter a transaction category?: (y/n)")
+                    filter_choice = input("Would you like to enter a transaction category? (y/n): ")
                     match filter_choice:
                         case "y":
                             transaction_category = input("Enter a transaction category: ")
+                            break
                         case "n":
+                            transaction_category = None
                             print("OK, transaction category will not be applied in the filter.")
                             break
                         case _:
                             print("Invalid choice!")
 
                 while True:
-                    filter_choice = input("Would you like to enter a mode of payment?: (y/n)")
+                    filter_choice = input("Would you like to enter a mode of payment? (y/n): ")
                     match filter_choice:
                         case "y":
                             mode_of_payment = input("Enter a mode of payment: ")
+                            break
                         case "n":
+                            mode_of_payment = None
                             print("OK, mode of payment will not be applied in the filter.")
                             break
                         case _:
                             print("Invalid choice!")
 
                 while True:
-                    filter_choice = input("Would you like to enter a time range?: (y/n)")
+                    filter_choice = input("Would you like to enter a time range? (y/n): ")
                     match filter_choice:
                         case "y":
                             year_min = int(input("Enter a minimum year: "))
@@ -204,8 +208,11 @@ def main():
 
                             timestamp_range_min = datetime(year_min, month_min, day_min, hour_min, minute_min)
                             timestamp_range_max = datetime(year_max, month_max, day_max, hour_max, minute_max)
+                            timestamp_range = (timestamp_range_min, timestamp_range_max)
+                            break
 
                         case "n":
+                            timestamp_range = None
                             print("OK, mode of payment will not be applied in the filter.")
                             break
                         case _:
@@ -213,18 +220,25 @@ def main():
 
 
                 while True:
-                    filter_choice = input("Would you like to enter an amount range?: (y/n)")
+                    filter_choice = input("Would you like to enter an amount range? (y/n): ")
                     match filter_choice:
                         case "y":
                             amount_min = float(input("Enter a minimum amount: "))
                             amount_max = float(input("Enter a maximum amount: "))
+                            amount_range = (amount_min, amount_max)
+                            break
                         case "n":
+                            amount_range = None
                             print("OK, amount range will not be applied in the filter.")
                             break
                         case _:
                             print("Invalid choice!")
 
-                custom_filter = Filter(transaction_subclass, transaction_category, mode_of_payment, (timestamp_range_min, timestamp_range_max), (amount_min, amount_max))
+                custom_filter = Filter(transaction_subclass, 
+                                       transaction_category, 
+                                       mode_of_payment, 
+                                       timestamp_range, 
+                                       amount_range)
                 tracker.transaction_history.filter_transactions(custom_filter)
 
             case "7":     #EXPORT TRANSACTION HISTORY
@@ -238,7 +252,14 @@ def main():
                 print("Invalid choice. Please try again.")
 
 
+main()
 
+
+
+
+
+
+#disregard code below
 """
 from receipt import Receipt
 from transaction import Expense, Income
