@@ -10,11 +10,9 @@ import filter as flt
 import json
 
 
-
 class TransactionHistory:
     def __init__(self, transactions):
-        self.transactions = transactions
-
+        self.transactions = transactions     #transactions should be a list
         self.test_expense_data = {
                     "expense_id": "EXP-0000",
                     "name": "Test Expense",
@@ -37,8 +35,6 @@ class TransactionHistory:
                     "comments": ["comment 1", "comment 2"]
                 }
 
-
-
     def display_transaction_history(self): #goes thru each transaction in the list and prints it out
         print("Transaction History:")
         for transaction in self.transactions:
@@ -47,29 +43,12 @@ class TransactionHistory:
             print("**********************")
 
 
-
     def add_transaction(self, transaction):     #puts the transaction into the list of transactions, and then updates its corresponding json file
         self.transactions.append(transaction)
-        
         transaction.save_to_json(transaction.json_path)
 
-    def remove_transaction(self, transaction_to_be_removed):  #removes the transaction from the list of transactions
 
-        """
-        if transaction in self.transactions:
-            temp_json_path = transaction.json_path
-
-            if type(transaction) == tr.Income:
-                self.transactions.remove(transaction)
-                with open(temp_json_path, "w", encoding="utf-8") as file:
-                    json.dump([self.test_income_data] + self.transactions, file, default=str, indent=2)
-
-            elif type(transaction) == tr.Expense:
-                self.transactions.remove(transaction)
-                with open(temp_json_path, "w", encoding="utf-8") as file:
-                    json.dump([self.test_expense_data] + self.transactions, file, default=str, indent=2)
-        """
-
+    def remove_transaction(self, transaction_to_be_removed):  #removes the transaction from the list of transactions, and then updates its corresponding json file
         data = []
         temp_json_path = transaction_to_be_removed.json_path
         if(type(transaction_to_be_removed) == tr.Income):
@@ -112,13 +91,10 @@ class TransactionHistory:
             os.makedirs(os.path.dirname("iet_json_files/exported_expense_data.json"), exist_ok=True) # Check if target directory exists again (?)
             with open(temp_json_path, "w", encoding="utf-8") as file: # Write to json
                 json.dump([self.test_expense_data] + data, file, default=str, indent=4)
+
                 
-
-
     def export_transaction_history(self):
         data = []
-
-
         for transaction in self.transactions:
 
             if (isinstance(transaction, tr.Income)):
@@ -139,7 +115,6 @@ class TransactionHistory:
 
 
         for transaction in self.transactions:
-
             if (isinstance(transaction, tr.Expense)):
                 new_transaction_format = {
                         "expense_id": transaction._expense_id,
@@ -156,7 +131,6 @@ class TransactionHistory:
         os.makedirs(os.path.dirname("iet_json_files/exported_expense_data.json"), exist_ok=True) # Check if target directory exists again (?)
         with open("iet_json_files/exported_expense_data.json", "w", encoding="utf-8") as file: # Write to json
             json.dump([self.test_expense_data] + data, file, default=str, indent=4)
-
 
 
     def filter_transactions(self, filter: flt.Filter):
@@ -184,7 +158,7 @@ class TransactionHistory:
         if len(search_results) > 0:
             print("Search Results: ")
             for result in search_results:
-                print(result)
+                return result
 
         else:
             print("Searched ID cannot be found.")
@@ -203,56 +177,35 @@ class TransactionHistory:
         if len(search_results) > 0:
             print("Search Results: ")
             for result in search_results:
-                print(result)
+                return result
         else:
             print("Searched name cannot be found.")
+            return None
 
 
+#transaction_history = TransactionHistory([])
 
-
-
-        
-
-transaction_history = TransactionHistory([])
-
-print(transaction_history.display_transaction_history())
-
+"""
 with open("iet_json_files/expenses.json", "r", encoding="utf-8") as file:
-    #transaction_history.transactions = json.load(file)
     temp_expense_history = json.load(file)
 
 with open("iet_json_files/income.json", "r", encoding="utf-8") as file:
-    #transaction_history.transactions = json.load(file)
     temp_income_history = json.load(file)
-
-
-#print(temp_expense_history[1])
 
 
 for i in range(1, len(temp_expense_history)):
     transaction_history.transactions.append(tr.Expense(**temp_expense_history[i]))
 
-
 for i in range(1, len(temp_income_history)):
     transaction_history.transactions.append(tr.Income(**temp_income_history[i]))
+"""
 
-#for expense in temp_expense_history:
-#    transaction_history.transactions.append(tr.Expense(**expense))
 
-#for income in temp_income_history:
-#    transaction_history.transactions.append(tr.Income(**income))
-
+"""
 transaction_history.display_transaction_history()
 
 transaction_history.export_transaction_history()
 
-
-
-
-
-#print(transaction1)
-#print()
-#print(transaction2)
 
 
 transaction1 = tr.Income("october 13 allowance", 2500.00, "cash", "allowance", receipt = None, comments = "I have extra allowance!")
@@ -303,3 +256,4 @@ transaction_history.remove_transaction(transaction10)
 
 
 #print("hi")
+"""
