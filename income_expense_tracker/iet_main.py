@@ -50,11 +50,11 @@ class IncomeExpenseTracker:
         expense = Expense(name,
                           amount, 
                           mode_of_payment, 
-                        category_of_payment, 
-                        quantity, 
-                        receipt, 
-                        comments
-                        )
+                          category_of_payment, 
+                          quantity, 
+                          receipt, 
+                          comments
+                          )
         self.transaction_history.add_transaction(expense)
 
     def filter_transactions(self, filter_criteria):
@@ -70,7 +70,9 @@ def show_menu():
     print("5. Search Transactions by Name")
     print("6. Filter Transactions")
     print("7. Export Transactions")
-    print("9. Exit")
+    print("8. Add an Expense Category")
+    print("9. Delete an Expense Category")
+    print("10. Exit")
 
 def show_filter_menu():
     print("Filter Transactions")
@@ -105,6 +107,7 @@ def main():
                 
                 match transaction_choice:
                     case "1":   #ADD TRANSACTION
+
                         #ADD NEW INCOME TRANSACTION
                         name = input("Enter income name: ")
                         amount = float(input("Enter income amount: "))
@@ -127,6 +130,7 @@ def main():
                         comments = input("Enter any comments: ")
                         tracker.add_expense(name=name, amount=amount, mode_of_payment=mode_of_payment, category_of_payment=category_of_payment, quantity=quantity, comments=comments)
                         print("Expense Transaction was successfully created!")
+
                     case _:
                         print("Invalid choice. Please try again.")
 
@@ -148,10 +152,10 @@ def main():
                 name = input("Enter transaction name to search: ")
                 print(tracker.transaction_history.search_by_name(name))
 
-            case "6":     #FILTER TRANSACTIONS
+            case "6":     #DISPLAY TRANSACTIONS USING A FILTER
                 show_filter_menu()
 
-                while True:
+                while True:      #FILTER BY TRANSACTION SUBCLASS
                     filter_choice = input("Would you like to enter a transaction subclass? (y/n): ")
                     match filter_choice:
                         case "y":
@@ -164,7 +168,7 @@ def main():
                         case _:
                             print("Invalid choice!")
 
-                while True:
+                while True:     #FILTER BY TRANSACTION CATEGORY
                     filter_choice = input("Would you like to enter a transaction category? (y/n): ")
                     match filter_choice:
                         case "y":
@@ -177,7 +181,7 @@ def main():
                         case _:
                             print("Invalid choice!")
 
-                while True:
+                while True:      #FILTER BY MODE OF PAYMENT
                     filter_choice = input("Would you like to enter a mode of payment? (y/n): ")
                     match filter_choice:
                         case "y":
@@ -190,7 +194,7 @@ def main():
                         case _:
                             print("Invalid choice!")
 
-                while True:
+                while True:     #FILTER BY TIME RANGE
                     filter_choice = input("Would you like to enter a time range? (y/n): ")
                     match filter_choice:
                         case "y":
@@ -219,7 +223,7 @@ def main():
                             print("Invalid choice!")
 
 
-                while True:
+                while True:        #FILTER BY AMOUNT RANGE
                     filter_choice = input("Would you like to enter an amount range? (y/n): ")
                     match filter_choice:
                         case "y":
@@ -244,7 +248,15 @@ def main():
             case "7":     #EXPORT TRANSACTION HISTORY
                 tracker.transaction_history.export_transaction_history()
 
-            case "9":     #EXIT IET MENU
+            case "8":     #ADD VALID CATEGORY
+                valid_category = input("Enter a valid expense category: ")
+                Expense.add_valid_category(valid_category)
+
+            case "9":     #DELETE VALID CATEGORY
+                valid_category = input("Enter a valid expense category: ")
+                Expense.add_valid_category(valid_category)
+
+            case "10":     #EXIT IET MENU
                 print("Leaving the Income Expense Tracker Menu.")
                 break
 
@@ -253,44 +265,3 @@ def main():
 
 
 main()
-
-
-
-
-
-
-#disregard code below
-"""
-from receipt import Receipt
-from transaction import Expense, Income
-from filter import Filter
-from transaction_history import TransactionHistory
-
-
-import sys
-import json
-import csv ## TO DO: Move the valid categories and methods to the CSV
-import os
-from pathlib import Path
-root_dir = Path(__file__).resolve().parent.parent # Get path to your root folder
-sys.path.append(str(root_dir)) # Add root folder to sys.path
-from abc import ABC, abstractmethod
-from datetime import datetime
-from income_expense_tracker.receipt import Receipt
-from general_purpose_functions.id_generator import id_generator
-import general_purpose_functions.custom_exceptions as cusexc
-import income_expense_tracker.transaction_history as transac_his
-import income_expense_tracker.transaction as transac
-
-def main():
-    while True:
-        print("Transaction Manager Menu")
-        print("Enter a command below: ")
-        print("(1) ENTER A TRANSACTION: ")
-        print("(2) DELETE A TRANSACTION: ")
-        print("(3) ")
-    
-
-if __name__ == "__main__":
-    main()
-"""
