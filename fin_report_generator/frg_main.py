@@ -1,5 +1,4 @@
-import json
-import os
+import math
 import sys
 from dataclasses import dataclass
 from datetime import datetime, time
@@ -11,6 +10,7 @@ if str(BASE_DIR) not in sys.path:
     sys.path.insert(0, str(BASE_DIR))
 
 from fin_report_generator.financial_report import FinancialReport
+from fin_report_generator.pie_chart import DataFileError, read_json_list
 
 
 FRG_DIR = Path(__file__).resolve().parent
@@ -21,7 +21,7 @@ REPORTS_PATH = FRG_DIR / "frg_json_files" / "financial_reports.json"
 EXPORT_DIR = FRG_DIR / "frg_exports"
 
 
-@dataclass
+@dataclass(frozen=True)
 class TransactionRecord:
     """A read-only transaction-shaped record used by the FRG.
 
@@ -39,6 +39,78 @@ class TransactionRecord:
     transaction_id: str = ""
     receipt: Any = None
     comments: Any = None
+
+    # A static method to return a stripped version of a string, or if it is not a str or is empty, raises Value Error
+    @staticmethod
+    def _clean_text(value, label):
+        if not isinstance(value, str):
+            raise ValueError(f"{label} must be in String (text) format.")
+        value = value.strip()
+        if not value:
+            raise ValueError(f"{label} cannot be empty.")
+        return value
+
+    # A static method to return the amount as a float, or raises Value Error if it is not a number greater than 0
+    @staticmethod
+    def _clean_amount(value):
+        if isinstance(value, bool) or not isinstance(value, (int, float)):
+            raise ValueError("Amount must be a number.")
+        if not math.isfinite(value) or value <= 0:
+            raise ValueError("Amount must be greater than 0.")
+        return float(value)
+
+    # A static method to return the quantity, or raises Value Error if it is not a whole number of at least 1
+    @staticmethod
+    def _clean_quantity(value):
+        if isinstance(value, bool) or not isinstance(value, int):
+            raise ValueError("Quantity must be a whole number.")
+        if value < 1:
+            raise ValueError("Quantity must be at least 1.")
+        return value
+
+    # A static method to return a datetime from a date-time string, or raises Value Error if it is missing, not valid or has a time zone (IET never saves one, and it could not be compared with the report range)
+    @staticmethod
+    def _clean_timestamp(value):
+        text = TransactionRecord._clean_text(value, "Timestamp")
+        try:
+            timestamp = datetime.fromisoformat(text)
+        except ValueError:
+            raise ValueError(f"Timestamp '{text}' is not a valid date and time.") from None
+        if timestamp.tzinfo is not None:
+            raise ValueError("Timestamp must not include a time zone.")
+        return timestamp
+
+    # A class method to create a record from a dictionary of an IET JSON file, or raises Value Error if it is not a dict or has missing fields or invalid values
+    @classmethod
+    def load_from_dict(cls, data, transaction_type):
+        if transaction_type not in ("expense", "income"):
+            raise ValueError("Transaction type must be 'expense' or 'income'.")
+        if not isinstance(data, dict):
+            raise ValueError("Record is not a JSON object.")
+
+        if transaction_type == "expense":
+            id_field, category_field = "expense_id", "category_of_payment"
+        else:
+            id_field, category_field = "income_id", "category_of_income"
+        required_fields = ("name", "amount", "mode_of_payment", "timestamp", id_field, category_field)
+        missing_fields = [field for field in required_fields if field not in data]
+        if missing_fields:
+            raise ValueError(f"Missing fields: {', '.join(missing_fields)}")
+
+        # An expense without a quantity counts as 1, but an income has no quantity
+        quantity = cls._clean_quantity(data.get("quantity", 1)) if transaction_type == "expense" else 1
+        return cls(
+            name=cls._clean_text(data["name"], "Name"),
+            amount=cls._clean_amount(data["amount"]),
+            mode_of_payment=cls._clean_text(data["mode_of_payment"], "Mode of payment"),
+            timestamp=cls._clean_timestamp(data["timestamp"]),
+            transaction_type=transaction_type,
+            category=cls._clean_text(data[category_field], "Category"),
+            quantity=quantity,
+            transaction_id=cls._clean_text(data[id_field], "Transaction ID"),
+            receipt=data.get("receipt"),
+            comments=data.get("comments", []),
+        )
 
     @property
     def category_of_payment(self) -> Optional[str]:
@@ -74,9 +146,8 @@ class TransactionRecord:
         return f"{self.name} ({self.transaction_type}) - PHP {self.amount:,.2f}"
 
 
-class FinancialReportCLI:
-    """Handles FRG menus, report inputs, chart display, and report exports."""
-
+# A class that handles the menu and all the user input and output, while FinancialReport handles the report itself
+class FinancialReportManager:
     def __init__(self):
         self.expenses: List[TransactionRecord] = []
         self.income: List[TransactionRecord] = []
@@ -85,114 +156,73 @@ class FinancialReportCLI:
 
     # ------------------------- DATA LOADING -------------------------
 
-    @staticmethod
-    def _read_json_records(filepath: Path) -> List[dict]:
-        if not filepath.exists():
-            return []
-        try:
-            with filepath.open("r", encoding="utf-8") as file:
-                data = json.load(file)
-        except (json.JSONDecodeError, OSError) as error:
-            raise ValueError(f"Could not read {filepath.name}: {error}") from error
-        if not isinstance(data, list):
-            raise ValueError(f"{filepath.name} must contain a JSON list.")
-        return data
-
-    @staticmethod
-    def _parse_timestamp(value: Any) -> datetime:
-        if isinstance(value, datetime):
-            return value
-        if not isinstance(value, str) or not value.strip():
-            raise ValueError("Missing transaction timestamp.")
-        return datetime.fromisoformat(value.strip())
-
-    def _make_record(self, data: dict, transaction_type: str) -> TransactionRecord:
-        timestamp = self._parse_timestamp(data.get("timestamp"))
-        amount = float(data["amount"])
-        if amount < 0:
-            raise ValueError("Transaction amount cannot be negative.")
-
-        if transaction_type == "expense":
-            category = data.get("category_of_payment")
-            transaction_id = data.get("expense_id", "")
-            quantity = int(data.get("quantity", 1))
-            if quantity < 1:
-                raise ValueError("Expense quantity must be at least 1.")
-        else:
-            category = data.get("category_of_income")
-            transaction_id = data.get("income_id", "")
-            quantity = 1
-
-        if not category:
-            raise ValueError("Missing transaction category.")
-
-        comments = data.get("comments", [])
-        return TransactionRecord(
-            name=str(data.get("name", "Unnamed transaction")),
-            amount=amount,
-            mode_of_payment=str(data.get("mode_of_payment", "Unknown")),
-            timestamp=timestamp,
-            transaction_type=transaction_type,
-            category=str(category),
-            quantity=quantity,
-            transaction_id=str(transaction_id),
-            receipt=data.get("receipt"),
-            comments=comments,
-        )
-
+    # A method to read one IET JSON file and return the valid records in it, and add a warning for each file or record that was skipped
+    # IET's data is only read and never changed, so a bad record is skipped instead of stopping everything
     def _load_transaction_file(self, filepath: Path, transaction_type: str) -> List[TransactionRecord]:
         records: List[TransactionRecord] = []
-        raw_records = self._read_json_records(filepath)
-        for line_number, data in enumerate(raw_records, start=1):
+        seen_ids = set()
+        try:
+            raw_records = read_json_list(filepath)
+        except DataFileError as error:
+            self.load_warnings.append(f"{error}; no {transaction_type} records were loaded")
+            return records
+        for number, data in enumerate(raw_records, start=1):
             try:
-                if not isinstance(data, dict):
-                    raise ValueError("Record is not a JSON object.")
-                records.append(self._make_record(data, transaction_type))
-            except (KeyError, TypeError, ValueError) as error:
+                record = TransactionRecord.load_from_dict(data, transaction_type)
+            except ValueError as error:
+                self.load_warnings.append(f"{filepath.name}, record {number}: {error} (skipped)")
+                continue
+            if record.transaction_id in seen_ids:
                 self.load_warnings.append(
-                    f"{filepath.name}, record {line_number}: {error} (skipped)"
+                    f"{filepath.name}, record {number}: repeats the ID '{record.transaction_id}' (skipped)"
                 )
+                continue
+            seen_ids.add(record.transaction_id)
+            records.append(record)
         return records
 
+    # A method to load the expenses and the income of IET, and tell the user how many were loaded and what was skipped
     def _load_transactions(self) -> None:
-        """Read IET's existing JSON records; no IET data is modified."""
         self.load_warnings = []
-        try:
-            self.expenses = self._load_transaction_file(EXPENSES_PATH, "expense")
-            self.income = self._load_transaction_file(INCOME_PATH, "income")
-        except ValueError as error:
-            print(f"\nUnable to load transaction data: {error}")
-            self.expenses = []
-            self.income = []
-            return
+        self.expenses = self._load_transaction_file(EXPENSES_PATH, "expense")
+        self.income = self._load_transaction_file(INCOME_PATH, "income")
 
         print("\nIET transaction data loaded for FRG.")
         print(f"  Expenses: {len(self.expenses)}")
         print(f"  Income:   {len(self.income)}")
         if self.load_warnings:
-            print(f"  Skipped records: {len(self.load_warnings)}")
+            print(f"  Warnings: {len(self.load_warnings)}")
             for warning in self.load_warnings:
                 print(f"  - {warning}")
 
     # ------------------------- INPUT HELPERS -------------------------
 
+    # A static method to convert the text typed by the user to a date, or raises Value Error if it is not valid
     @staticmethod
-    def _ask_date(label: str) -> datetime:
+    def _to_date(text):
+        try:
+            return datetime.strptime(text, "%Y-%m-%d")
+        except ValueError:
+            # "from None" hides the original strptime error so only the friendlier message is shown
+            raise ValueError("Date must be a real date in the format YYYY-MM-DD") from None
+
+    # A static method to keep asking for one value until a valid one is entered, and return it
+    # converter turns the typed text into the right type, and cleaner checks the value and raises Value Error if it is not valid
+    # If optional is True, pressing Enter skips the question and returns None
+    @staticmethod
+    def _ask_field(label, cleaner=None, converter=None, optional=False):
         while True:
-            text = input(f"{label} (YYYY-MM-DD): ").strip()
+            suffix = " (Enter to skip)" if optional else ""
+            text = input(f"{label}{suffix}: ").strip()
+            if optional and not text:
+                return None
             try:
-                return datetime.strptime(text, "%Y-%m-%d")
-            except ValueError:
-                print("  Invalid date. Please use YYYY-MM-DD.")
+                value = converter(text) if converter else text
+                return cleaner(value) if cleaner else value
+            except ValueError as error:
+                print(f"  Invalid input: {str(error).rstrip('.')}. Please try again.")
 
-    @staticmethod
-    def _ask_text(label: str, allow_blank: bool = True) -> str:
-        while True:
-            value = input(f"{label}: ").strip()
-            if value or allow_blank:
-                return value
-            print("  This field cannot be empty.")
-
+    # A static method to ask a yes or no question until the user answers, and return True for yes or False for no
     @staticmethod
     def _confirm(question: str) -> bool:
         while True:
@@ -205,11 +235,13 @@ class FinancialReportCLI:
 
     # ------------------------- DISPLAY HELPERS -------------------------
 
+    # A static method to print the main menu
     @staticmethod
     def _show_menu() -> None:
-        print("\n" + "=" * 43)
-        print("       FINANCIAL REPORT GENERATOR")
-        print("=" * 43)
+        print()
+        print("=-" * 17)
+        print("   FINANCIAL REPORT GENERATOR")
+        print("=-" * 17)
         print("[1] Generate Financial Report")
         print("[2] View Current Report")
         print("[3] View Pie Chart")
@@ -217,51 +249,58 @@ class FinancialReportCLI:
         print("[5] View Saved Reports")
         print("[6] Reload IET Transaction Data")
         print("[7] Exit")
-        print("=" * 43)
 
     def _print_current_report(self) -> None:
         if self.current_report is None:
             print("\nNo report has been generated yet. Choose option [1] first.")
             return
-        print("\n" + "=" * 43)
-        print("             FINANCIAL REPORT")
-        print("=" * 43)
+        print("\n" + "=-" * 17)
+        print("        FINANCIAL REPORT")
+        print("=-" * 17)
         print(self.current_report)
-        print("=" * 43)
+        print("=-" * 17)
 
+    # A static method to print the transactions of the report as a table, sorted by time
     @staticmethod
     def _print_transaction_summary(expenses: List[TransactionRecord], income: List[TransactionRecord]) -> None:
         print("\nTRANSACTION SUMMARY FOR SELECTED PERIOD")
-        print("-" * 72)
-        print(f"{'TYPE':<10}{'DATE':<13}{'DESCRIPTION':<25}{'AMOUNT':>14}{'CATEGORY':>10}")
-        print("-" * 72)
+        print("-" * 73)
+        print(f"{'TYPE':<10}{'DATE':<13}{'DESCRIPTION':<25}{'AMOUNT':>14} {'CATEGORY':>10}")
+        print("-" * 73)
         combined = [(item, "Expense") for item in expenses] + [(item, "Income") for item in income]
         combined.sort(key=lambda pair: pair[0].timestamp)
         for item, kind in combined:
             category = item.category
-            signed_amount = f"{item.amount * item.quantity:,.2f}"
-            print(f"{kind:<10}{item.timestamp:%Y-%m-%d}   {item.name[:24]:<25}{signed_amount:>14} {category[:10]:>10}")
-        print("-" * 72)
+            total_amount = f"{item.amount * item.quantity:,.2f}"
+            print(f"{kind:<10}{item.timestamp:%Y-%m-%d}   {item.name[:24]:<25}{total_amount:>14} {category[:10]:>10}")
+        print("-" * 73)
         print(f"Transactions included: {len(combined)}")
 
     # ------------------------- MENU ACTIONS -------------------------
 
+    # [1] Generate Financial Report
+    # A method to ask for the dates and descriptions, then build the report and print it
     def generate_financial_report(self) -> None:
         print("\n=-= Generate Financial Report =-=")
         if not self.expenses and not self.income:
             print("No IET transaction records are available to generate a report.")
             return
 
-        start_date = self._ask_date("Start date")
-        end_date = self._ask_date("End date")
+        start_date = self._ask_field("Start date (YYYY-MM-DD)", converter=self._to_date)
+        end_date = self._ask_field("End date (YYYY-MM-DD)", converter=self._to_date)
+        # The whole of the end date counts, so the range ends at the last moment of that day
         end_date = datetime.combine(end_date.date(), time.max)
         if end_date < start_date:
-            print("End date cannot be earlier than start date.")
+            print("  End date cannot be earlier than start date.")
             return
 
-        expenses_description = self._ask_text("Expense description (optional)")
-        income_description = self._ask_text("Income description (optional)")
+        # None means the user pressed Enter, so the description stays empty
+        expenses_description = self._ask_field(
+            "Expense description", FinancialReport.clean_description, optional=True) or ""
+        income_description = self._ask_field(
+            "Income description", FinancialReport.clean_description, optional=True) or ""
 
+        # The values were already checked one by one, so these errors are only a safety net
         try:
             report = FinancialReport(
                 range_of_time=(start_date, end_date),
@@ -270,8 +309,8 @@ class FinancialReportCLI:
                 expenses_description=expenses_description,
                 income_description=income_description,
             )
-        except (ValueError, TypeError, OSError) as error:
-            print(f"Could not generate the report: {error}")
+        except (ValueError, TypeError) as error:
+            print(f"  Could not generate the report: {error}")
             return
 
         self.current_report = report
@@ -279,9 +318,12 @@ class FinancialReportCLI:
         self._print_transaction_summary(report.expenses, report.income)
         self._print_current_report()
 
+    # [2] View Current Report
     def view_current_report(self) -> None:
         self._print_current_report()
 
+    # [3] View Pie Chart
+    # A method to ask which chart of the current report to show, then show it
     def view_pie_chart(self) -> None:
         print("\n=-= View Pie Chart =-=")
         if self.current_report is None:
@@ -301,11 +343,15 @@ class FinancialReportCLI:
             if choice == "0":
                 print("Chart viewing cancelled.")
                 return
-            if choice.isdigit() and 1 <= int(choice) <= len(charts):
-                charts[int(choice) - 1].display_pie_chart()
+            if choice.isdecimal() and 1 <= int(choice) <= len(charts):
+                try:
+                    charts[int(choice) - 1].display_pie_chart()
+                except (ValueError, RuntimeError) as error:
+                    print(f"  Could not show the chart: {error}")
                 return
-            print("Invalid choice. Please select one of the listed charts.")
+            print("  Invalid choice. Please select one of the listed charts.")
 
+    # [4] Save / Export Current Report
     def save_export_report(self) -> None:
         print("\n=-= Save / Export Current Report =-=")
         if self.current_report is None:
@@ -323,7 +369,6 @@ class FinancialReportCLI:
                 self.current_report.save_to_json(str(REPORTS_PATH))
                 print(f"Report saved to: {REPORTS_PATH}")
             elif choice == "2":
-                EXPORT_DIR.mkdir(parents=True, exist_ok=True)
                 filename = EXPORT_DIR / f"{self.current_report.report_id}.json"
                 self.current_report.export_report(str(filename))
                 print(f"Report exported to: {filename}")
@@ -332,7 +377,6 @@ class FinancialReportCLI:
                 if not charts:
                     print("There are no charts to export.")
                     return
-                EXPORT_DIR.mkdir(parents=True, exist_ok=True)
                 for chart in charts:
                     filename = EXPORT_DIR / f"{self.current_report.report_id}_{chart.attribute}.png"
                     chart.export_pie_chart(str(filename))
@@ -340,39 +384,43 @@ class FinancialReportCLI:
             elif choice == "4":
                 return
             else:
-                print("Invalid choice. Please select 1-4.")
-        except (OSError, TypeError, ValueError) as error:
-            print(f"Could not save or export the report: {error}")
+                print("  Invalid choice. Please select 1-4.")
+        except DataFileError as error:
+            print(f"  {error}\n  Nothing more was saved.")
+        except ValueError as error:
+            print(f"  Could not save or export the report: {error}")
 
+    # [5] View Saved Reports
+    # A method to print a table of the saved reports, where an unreadable record is shown as such instead of stopping
     def view_saved_reports(self) -> None:
         print("\n=-= Saved Financial Reports =-=")
-        if not REPORTS_PATH.exists():
-            print("No saved report history was found.")
-            return
         try:
-            with REPORTS_PATH.open("r", encoding="utf-8") as file:
-                reports = json.load(file)
-        except (json.JSONDecodeError, OSError) as error:
-            print(f"Could not read saved reports: {error}")
+            reports = read_json_list(REPORTS_PATH)
+        except DataFileError as error:
+            print(f"  {error}")
             return
-
-        if not isinstance(reports, list) or not reports:
+        if not reports:
             print("No saved reports were found.")
             return
 
         print(f"{'#':<4}{'REPORT ID':<25}{'TOTAL INCOME':>15}{'TOTAL EXPENSES':>18}{'RESULT':>12}")
-        print("-" * 76)
+        print("-" * 74)
+        readable_count = 0
         for index, report in enumerate(reports, start=1):
-            if not isinstance(report, dict):
+            try:
+                report_id = str(report["report_id"])
+                income_total = float(report["total_income"])
+                expense_total = float(report["total_expenses"])
+                result = str(report["gain_or_loss"])
+            except (KeyError, TypeError, ValueError):
+                print(f"{index:<4}(this record is unreadable)")
                 continue
-            report_id = str(report.get("report_id", "Unknown"))
-            income_total = float(report.get("total_income", 0))
-            expense_total = float(report.get("total_expenses", 0))
-            result = str(report.get("gain_or_loss", "Unknown"))
+            readable_count += 1
             print(f"{index:<4}{report_id[:24]:<25}{income_total:>15,.2f}{expense_total:>18,.2f}{result:>12}")
-        print("-" * 76)
-        print(f"Saved report count: {len(reports)}")
+        print("-" * 74)
+        print(f"Saved report count: {len(reports)} ({readable_count} readable)")
 
+    # [6] Reload IET Transaction Data
     def reload_transaction_data(self) -> None:
         if self._confirm("Reload the latest transaction data from IET"):
             self._load_transactions()
@@ -381,8 +429,10 @@ class FinancialReportCLI:
 
     # ------------------------- MAIN LOOP -------------------------
 
+    # A method to show the menu again and again until the user chooses Exit
     def run(self) -> None:
         self._load_transactions()
+        # A dictionary that maps each menu choice to the method to run, so no long if/else chain is needed (7 is handled separately as Exit)
         actions = {
             "1": self.generate_financial_report,
             "2": self.view_current_report,
@@ -400,20 +450,26 @@ class FinancialReportCLI:
                     print("Thank you for using the Financial Report Generator!")
                     break
                 action = actions.get(choice)
+                # None means the choice is not in the dictionary, so it is not valid
                 if action is None:
-                    print("Invalid choice. Please enter a number from 1 to 7.")
+                    if choice:
+                        print(f"  '{choice}' is not a valid choice. Please enter a number from 1 to 7.")
+                    else:
+                        print("  You did not enter anything. Please enter a number from 1 to 7.")
                     continue
                 action()
             except KeyboardInterrupt:
+                # Ctrl+C cancels the current action and goes back to the menu
                 print("\nOperation cancelled. Returning to the main menu.")
             except EOFError:
+                # The input has ended (for example Ctrl+D), so there is nothing more to read
                 print("\nInput ended. Exiting the FRG.")
                 break
 
 
 def main() -> None:
-    cli = FinancialReportCLI()
-    cli.run()
+    manager = FinancialReportManager()
+    manager.run()
 
 
 if __name__ == "__main__":
