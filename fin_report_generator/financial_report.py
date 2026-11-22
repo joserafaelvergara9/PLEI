@@ -49,6 +49,9 @@ class FinancialReport:
             if self._expenses:
                 self._pie_charts.append(PieChart(attribute="category_of_payment", transactions=self._expenses))
                 self._pie_charts.append(PieChart(attribute="mode_of_payment", transactions=self._expenses))
+            # Income gets its own chart by category, since it is charted separately from the expenses
+            if self._income:
+                self._pie_charts.append(PieChart(attribute="category_of_income", transactions=self._income))
         self._expenses_description = self.clean_description(expenses_description)
         self._income_description = self.clean_description(income_description)
 

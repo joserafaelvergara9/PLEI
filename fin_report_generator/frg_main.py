@@ -260,6 +260,12 @@ class FinancialReportManager:
         print(self.current_report)
         print("=-" * 17)
 
+    # A static method to return a readable name for a chart, saying whether it is about expenses or income
+    @staticmethod
+    def _chart_label(chart) -> str:
+        source = "Income" if chart.attribute == "category_of_income" else "Expenses"
+        return f"{source}: Distribution by {chart.attribute.replace('_', ' ').title()}"
+
     # A static method to print the transactions of the report as a table, sorted by time
     @staticmethod
     def _print_transaction_summary(expenses: List[TransactionRecord], income: List[TransactionRecord]) -> None:
@@ -331,12 +337,12 @@ class FinancialReportManager:
             return
         charts = self.current_report.pie_charts
         if not charts:
-            print("There are no expense pie charts for this report's date range.")
+            print("There are no pie charts for this report's date range.")
             return
 
         print("Available charts:")
         for index, chart in enumerate(charts, start=1):
-            print(f"[{index}] Distribution by {chart.attribute.replace('_', ' ').title()}")
+            print(f"[{index}] {self._chart_label(chart)}")
 
         while True:
             choice = input(f"Choose a chart (1-{len(charts)}) or 0 to cancel: ").strip()

@@ -237,6 +237,17 @@ def pie_chart_test():
     pyplot.show()
     pyplot.close(fig)
 
+    # Income is charted by its own category attribute
+    oct_income = [
+        SimpleNamespace(name="Salary", amount=20000.0, mode_of_payment="debit", category_of_income="salary"),
+        SimpleNamespace(name="Freelance", amount=5000.0, mode_of_payment="cash", category_of_income="side income"),
+        SimpleNamespace(name="Gift", amount=1000.0, mode_of_payment="cash", category_of_income="gifts"),
+    ]
+    income_chart = PieChart(attribute="category_of_income", transactions=oct_income)
+    fig = income_chart.generate_pie_chart(title="Income by Category")
+    pyplot.show()
+    pyplot.close(fig)
+
 
 if __name__ == "__main__":
     pie_chart_test()

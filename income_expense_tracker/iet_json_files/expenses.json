@@ -33,5 +33,18 @@
         "timestamp": "2026-11-22T17:53:10.799875",
         "receipt": null,
         "comments": []
+    },
+    {
+        "expense_id": "EXP-0004",
+        "name": "11.23 book",
+        "amount": 670.0,
+        "quantity": 1,
+        "mode_of_payment": "cash",
+        "category_of_payment": "personal",
+        "timestamp": "2026-11-23T06:43:01.949706",
+        "receipt": null,
+        "comments": [
+            "requirement for subject"
+        ]
     }
 ]
