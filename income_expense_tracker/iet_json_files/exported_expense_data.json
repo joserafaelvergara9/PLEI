@@ -1,16 +1,50 @@
 [
     {
-        "expense_id": "EXP-0000",
-        "name": "Test Expense",
-        "amount": 189.92,
+        "expense_id": "EXP-0001",
+        "name": "11.18 lunch",
+        "amount": 200.0,
         "quantity": 1,
-        "mode_of_payment": "Test Mode",
-        "category_of_payment": "Test Category",
-        "timestamp": "",
-        "receipt": "receipt",
+        "mode_of_payment": "qrph",
+        "category_of_payment": "food",
+        "timestamp": "2026-11-18T14:17:08.524603",
+        "receipt": null,
+        "comments": []
+    },
+    {
+        "expense_id": "EXP-0002",
+        "name": "11.22 medicine",
+        "amount": 1400.0,
+        "quantity": 2,
+        "mode_of_payment": "cash",
+        "category_of_payment": "healthcare",
+        "timestamp": "2026-11-22T17:52:40.101546",
+        "receipt": null,
         "comments": [
-            "comment 1",
-            "comment 2"
+            "expensive"
+        ]
+    },
+    {
+        "expense_id": "EXP-0003",
+        "name": "new bag 11.22",
+        "amount": 4000.0,
+        "quantity": 1,
+        "mode_of_payment": "credit",
+        "category_of_payment": "personal",
+        "timestamp": "2026-11-22T17:53:10.799875",
+        "receipt": null,
+        "comments": []
+    },
+    {
+        "expense_id": "EXP-0004",
+        "name": "11.23 book",
+        "amount": 670.0,
+        "quantity": 1,
+        "mode_of_payment": "cash",
+        "category_of_payment": "personal",
+        "timestamp": "2026-11-23T06:43:01.949706",
+        "receipt": null,
+        "comments": [
+            "requirement for subject"
         ]
     }
 ]

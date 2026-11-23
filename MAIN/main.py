@@ -29,7 +29,6 @@ FRG_BRANCH = ("Financial Report Generator", "fin_report_generator.frg_main", FRG
 # The IET saves every change to its JSON files, and the FRG reads those files each time it starts,
 # so a report made right after using the IET always includes the latest transactions
 class ProgramManager:
-
     # A static method to print the main menu
     @staticmethod
     def _show_menu():

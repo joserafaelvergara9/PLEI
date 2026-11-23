@@ -20,5 +20,31 @@
         "comments": [
             "he gave it as repayment for a favor"
         ]
+    },
+    {
+        "income_id": "INC-0003",
+        "name": "11.23 friends debt to me",
+        "amount": 1400.0,
+        "mode_of_payment": "cash",
+        "category_of_income": "gift",
+        "timestamp": "2026-11-23T10:49:24.214091",
+        "receipt": null,
+        "comments": []
+    },
+    {
+        "income_id": "INC-0004",
+        "name": "12213",
+        "amount": 1414.0,
+        "mode_of_payment": "cash",
+        "category_of_income": "salary",
+        "timestamp": "2026-11-23T12:45:03.905905",
+        "receipt": {
+            "receipt_id": "REC-0001",
+            "timestamp": "2026-11-23T12:44:54.068563",
+            "amount": 1414.0,
+            "organization": "1",
+            "address": "1"
+        },
+        "comments": []
     }
 ]

@@ -1,15 +1,50 @@
 [
     {
-        "income_id": "INC-0000",
-        "name": "Test Income",
-        "amount": 189.92,
-        "mode_of_payment": "Test Mode",
-        "category_of_income": "Test Category",
-        "timestamp": "",
-        "receipt": "receipt",
+        "income_id": "INC-0001",
+        "name": "11.18 salary",
+        "amount": 5000.0,
+        "mode_of_payment": "credit",
+        "category_of_income": "salary",
+        "timestamp": "2026-11-18T14:16:20.322036",
+        "receipt": null,
+        "comments": []
+    },
+    {
+        "income_id": "INC-0002",
+        "name": "gift from isagani",
+        "amount": 2000.0,
+        "mode_of_payment": "qrph",
+        "category_of_income": "gift",
+        "timestamp": "2026-11-22T18:27:56.282534",
+        "receipt": null,
         "comments": [
-            "comment 1",
-            "comment 2"
+            "he gave it as repayment for a favor"
         ]
+    },
+    {
+        "income_id": "INC-0003",
+        "name": "11.23 friends debt to me",
+        "amount": 1400.0,
+        "mode_of_payment": "cash",
+        "category_of_income": "gift",
+        "timestamp": "2026-11-23T10:49:24.214091",
+        "receipt": null,
+        "comments": []
+    },
+    {
+        "income_id": "INC-0004",
+        "name": "12213",
+        "amount": 1414.0,
+        "mode_of_payment": "cash",
+        "category_of_income": "salary",
+        "timestamp": "2026-11-23T12:45:03.905905",
+        "receipt": {
+            "receipt_id": "REC-0001",
+            "timestamp": "2026-11-23T12:44:54.068563",
+            "amount": 1414.0,
+            "organization": "1",
+            "address": "1"
+        },
+        "comments": []
     }
 ]
