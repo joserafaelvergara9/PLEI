@@ -34,7 +34,7 @@ class ProgramManager:
     def _show_menu():
         print()
         print("=-" * 17)
-        print("   INCOME AND EXPENSE PROGRAM")
+        print("   PERSONAL LEDGER FOR EXPENSES AND INCOME (P.L.E.I.)")
         print("=-" * 17)
         print("[1] Income and Expense Tracker")
         print("[2] Financial Report Generator")

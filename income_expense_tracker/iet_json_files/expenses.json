@@ -46,5 +46,16 @@
         "comments": [
             "requirement for subject"
         ]
+    },
+    {
+        "expense_id": "EXP-0005",
+        "name": "debt payment",
+        "amount": 5000.0,
+        "quantity": 1,
+        "mode_of_payment": "cash",
+        "category_of_payment": "debt",
+        "timestamp": "2026-11-24T11:44:33.530303",
+        "receipt": null,
+        "comments": []
     }
 ]
