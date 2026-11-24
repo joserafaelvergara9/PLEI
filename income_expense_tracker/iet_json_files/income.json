@@ -46,5 +46,39 @@
             "address": "1"
         },
         "comments": []
+    },
+    {
+        "income_id": "INC-0005",
+        "name": "found 50",
+        "amount": 50.0,
+        "mode_of_payment": "cash",
+        "category_of_income": "gift",
+        "timestamp": "2026-11-24T14:06:24.109940",
+        "receipt": null,
+        "comments": [
+            "found on the road within a hidden compartment of a telephone pole"
+        ]
+    },
+    {
+        "income_id": "INC-0006",
+        "name": "commission 11.24",
+        "amount": 300.0,
+        "mode_of_payment": "paypal",
+        "category_of_income": "salary",
+        "timestamp": "2026-11-24T14:38:33.323995",
+        "receipt": null,
+        "comments": [
+            "small commission"
+        ]
+    },
+    {
+        "income_id": "INC-0007",
+        "name": "expropriated funds from brother",
+        "amount": 5500.23,
+        "mode_of_payment": "credit",
+        "category_of_income": "bonus",
+        "timestamp": "2026-11-24T17:02:46.702753",
+        "receipt": null,
+        "comments": []
     }
 ]

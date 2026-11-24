@@ -57,5 +57,16 @@
         "timestamp": "2026-11-24T11:44:33.530303",
         "receipt": null,
         "comments": []
+    },
+    {
+        "expense_id": "EXP-0006",
+        "name": "food 11.24",
+        "amount": 1000.0,
+        "quantity": 1,
+        "mode_of_payment": "qrph",
+        "category_of_payment": "food",
+        "timestamp": "2026-11-24T13:04:19.381998",
+        "receipt": null,
+        "comments": []
     }
 ]

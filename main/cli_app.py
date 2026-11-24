@@ -141,7 +141,7 @@ def show_dashboard():
     reports = _count_records(REPORTS_PATH)
     totals = _sum_totals()
 
-    heading("Your data at a glance")
+    heading("All data stored currently ⸜(｡˃ ᵕ ˂ )⸝")
     print(f"  Expenses recorded : {Style.paint(_fmt_count(expenses), 'bold')}")
     print(f"  Income recorded   : {Style.paint(_fmt_count(income), 'bold')}")
     print(f"  Saved reports     : {Style.paint(_fmt_count(reports), 'bold')}")
@@ -232,7 +232,7 @@ class CommandPromptApp:
         print()
         box([APP_TITLE, f"v{APP_VERSION}  ·  {datetime.now():%A, %d %B %Y}"])
         show_dashboard()
-        heading("Main menu")
+        heading("Main menu ദ്ദി(˵ •̀ ᴗ - ˵ ) ✧")
         print(f"  {Style.paint('[1]', 'pink', 'bold')} Guided walkthrough  {Style.paint('(recommended for first use)', 'dim')}")
         print(f"  {Style.paint('[2]', 'pink', 'bold')} Income and Expense Tracker")
         print(f"  {Style.paint('[3]', 'pink', 'bold')} Financial Report Generator")
