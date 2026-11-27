@@ -80,5 +80,27 @@
         "timestamp": "2026-11-24T17:02:46.702753",
         "receipt": null,
         "comments": []
+    },
+    {
+        "income_id": "INC-0008",
+        "name": "JAQ",
+        "amount": 300.0,
+        "mode_of_payment": "cash",
+        "category_of_income": "gift",
+        "timestamp": "2026-11-26T12:04:59.423616",
+        "receipt": null,
+        "comments": []
+    },
+    {
+        "income_id": "INC-0009",
+        "name": "i found 500 pesos on the side of the road",
+        "amount": 500.0,
+        "mode_of_payment": "cash",
+        "category_of_income": "gift",
+        "timestamp": "2026-11-26T18:30:17.506986",
+        "receipt": null,
+        "comments": [
+            "finders keepers"
+        ]
     }
 ]
